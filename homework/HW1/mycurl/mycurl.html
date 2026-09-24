@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>mycurl.py</title>
+<style>
+body{font-family:Consolas,Menlo,monospace;background:#1e1e1e;color:#d4d4d4;margin:0;padding:20px}
+h1{font-size:18px;color:#fff}
+pre{background:#252526;padding:16px;border-radius:8px;overflow:auto;line-height:1.5;white-space:pre}
+.bar{margin-bottom:12px;color:#aaa;font-size:13px}
+</style>
+</head>
+<body>
+<h1>mycurl.py</h1>
+<div class="bar">路徑: homework/HW1/mycurl/mycurl.py ｜ 共 309 行 ｜可用瀏覽器開啟此 HTML 查看原始碼</div>
+<pre><code>#!/usr/bin/env python3
+&quot;&quot;&quot;mycurl - 類似 curl 的最小可用版 HTTP 客戶端 (只用 Python 標準函式庫).
+
+功能:
+  GET / POST / 任意 -X 方法, -H 自訂標頭, -d 傳送資料, --json 快捷,
+  -o 存檔, -O 用遠端檔名存檔, -i 顯示回應標頭, -v 顯示請求/回應過程,
+  -L 跟隨重新導向, --timeout, -u Basic 認證, -A User-Agent,
+  -k 略過 SSL 驗證, --fail 讓 HTTP 錯誤回非零結束碼.
+
+用法範例:
+  python mycurl/mycurl.py https://example.com
+  python mycurl/mycurl.py -v https://httpbin.org/get
+  python mycurl/mycurl.py -H &quot;X-Token: abc&quot; -d &quot;a=1&amp;b=2&quot; https://httpbin.org/post
+  python mycurl/mycurl.py -o out.html https://example.com
+&quot;&quot;&quot;
+
+import argparse
+import base64
+import os
+import ssl
+import sys
+import urllib.error
+import urllib.parse
+import urllib.request
+
+
+VERSION = &quot;mycurl 0.1.0 (python stdlib only)&quot;
+
+
+def build_parser() -&gt; argparse.ArgumentParser:
+    p = argparse.ArgumentParser(
+        prog=&quot;mycurl&quot;,
+        description=&quot;類似 curl 的最小可用版 HTTP 客戶端 (Python 標準函式庫實作)&quot;,
+    )
+    p.add_argument(&quot;url&quot;, nargs=&quot;?&quot;, help=&quot;要請求的 URL, 例: https://example.com&quot;)
+    p.add_argument(&quot;-X&quot;, &quot;--request&quot;, dest=&quot;method&quot;, default=None,
+                   help=&quot;HTTP 方法, 例: GET, POST, PUT, DELETE (預設: 有 -d 則為 POST, 否則 GET)&quot;)
+    p.add_argument(&quot;-H&quot;, &quot;--header&quot;, action=&quot;append&quot;, default=[],
+                   metavar=&#x27;&quot;Key: Value&quot;&#x27;, help=&quot;自訂請求標頭, 可重複使用&quot;)
+    p.add_argument(&quot;-d&quot;, &quot;--data&quot;, action=&quot;append&quot;, default=[],
+                   metavar=&quot;DATA&quot;, help=&quot;請求 body. 多個 -d 會用 &amp; 連接. @file 表示從檔案讀取&quot;)
+    p.add_argument(&quot;--json&quot;, dest=&quot;json_data&quot;, default=None,
+                   metavar=&quot;JSON&quot;, help=&quot;傳送 JSON, 自動加上 Content-Type: application/json&quot;)
+    p.add_argument(&quot;-o&quot;, &quot;--output&quot;, default=None, help=&quot;把回應 body 存到檔案 (而非 stdout)&quot;)
+    p.add_argument(&quot;-O&quot;, &quot;--remote-name&quot;, action=&quot;store_true&quot;,
+                   help=&quot;用 URL 最後一段檔名存檔 (類似 curl -O)&quot;)
+    p.add_argument(&quot;-i&quot;, &quot;--include&quot;, action=&quot;store_true&quot;, help=&quot;輸出包含回應標頭&quot;)
+    p.add_argument(&quot;-v&quot;, &quot;--verbose&quot;, action=&quot;store_true&quot;, help=&quot;顯示請求/回應標頭過程 (輸出到 stderr)&quot;)
+    p.add_argument(&quot;-L&quot;, &quot;--location&quot;, action=&quot;store_true&quot;, help=&quot;跟隨 3xx 重新導向&quot;)
+    p.add_argument(&quot;--max-redirs&quot;, type=int, default=5, help=&quot;最多跟隨幾次導向 (預設 5, 需搭配 -L)&quot;)
+    p.add_argument(&quot;--timeout&quot;, type=float, default=30, help=&quot;逾時秒數 (預設 30)&quot;)
+    p.add_argument(&quot;-u&quot;, &quot;--user&quot;, default=None, metavar=&quot;user:pass&quot;, help=&quot;HTTP Basic 認證&quot;)
+    p.add_argument(&quot;-A&quot;, &quot;--user-agent&quot;, default=&quot;mycurl/0.1.0&quot;,
+                   help=&quot;自訂 User-Agent (預設 mycurl/0.1.0)&quot;)
+    p.add_argument(&quot;-k&quot;, &quot;--insecure&quot;, action=&quot;store_true&quot;, help=&quot;略過 SSL 憑證驗證 (測試用)&quot;)
+    p.add_argument(&quot;--fail&quot;, action=&quot;store_true&quot;,
+                   help=&quot;HTTP &gt;= 400 時結束碼為 22 且不在 stdout 輸出 body (類似 curl -f)&quot;)
+    p.add_argument(&quot;-s&quot;, &quot;--silent&quot;, action=&quot;store_true&quot;, help=&quot;安靜模式: 不輸出錯誤訊息&quot;)
+    p.add_argument(&quot;--version&quot;, action=&quot;store_true&quot;, help=&quot;顯示版本&quot;)
+    return p
+
+
+def parse_header(raw: str):
+    &quot;&quot;&quot;解析 &#x27;Key: Value&#x27; -&gt; (Key, Value). 沒有冒號則報錯.&quot;&quot;&quot;
+    if &quot;:&quot; not in raw:
+        raise ValueError(f&quot;標頭格式錯誤 (需要 &#x27;Key: Value&#x27;): {raw!r}&quot;)
+    key, value = raw.split(&quot;:&quot;, 1)
+    key, value = key.strip(), value.strip()
+    if not key:
+        raise ValueError(f&quot;標頭名稱不可為空: {raw!r}&quot;)
+    return key, value
+
+
+def load_data(data_list, json_data):
+    &quot;&quot;&quot;回傳 (body_bytes_or_None, is_json).&quot;&quot;&quot;
+    if json_data is not None:
+        return json_data.encode(&quot;utf-8&quot;), True
+    if not data_list:
+        return None, False
+    parts = []
+    for item in data_list:
+        if item.startswith(&quot;@&quot;):
+            path = item[1:]
+            with open(path, &quot;rb&quot;) as f:
+                parts.append(f.read().decode(&quot;utf-8&quot;))
+        else:
+            parts.append(item)
+    return (&quot;&amp;&quot;.join(parts)).encode(&quot;utf-8&quot;), False
+
+
+def make_ssl_context(insecure: bool):
+    if insecure:
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        return ctx
+    return None
+
+
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    &quot;&quot;&quot;擋下自動導向, 讓我們自己依 -L 決定要不要跟隨 (方便 -v 顯示每次過程).&quot;&quot;&quot;
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+def do_request(url, method, headers, body, timeout, ssl_context,
+               follow_redirects, max_redirs, verbose):
+    &quot;&quot;&quot;發送請求, 回傳 (status, resp_headers_list, body_bytes, final_url).
+
+    遇到 3xx 且 follow_redirects=True 時手動跟隨, 以便 -v 能印出每一站.
+    &quot;&quot;&quot;
+    opener = urllib.request.build_opener(NoRedirect)
+    current_url = url
+    redirects = 0
+
+    while True:
+        req = urllib.request.Request(current_url, data=body, method=method)
+        for k, v in headers:
+            req.add_header(k, v)
+
+        if verbose:
+            parsed = urllib.parse.urlparse(current_url)
+            print(f&quot;&gt; {method} {parsed.path or &#x27;/&#x27;}&quot; +
+                  (f&quot;?{parsed.query}&quot; if parsed.query else &quot;&quot;) +
+                  &quot; HTTP/1.1&quot;, file=sys.stderr)
+            print(f&quot;&gt; Host: {parsed.netloc}&quot;, file=sys.stderr)
+            for k, v in headers:
+                print(f&quot;&gt; {k}: {v}&quot;, file=sys.stderr)
+            print(&quot;&gt;&quot;, file=sys.stderr)
+
+        try:
+            kwargs = {&quot;timeout&quot;: timeout}
+            if ssl_context is not None:
+                kwargs[&quot;context&quot;] = ssl_context
+            with opener.open(req, **kwargs) as resp:
+                status = resp.status
+                resp_headers = list(resp.getheaders())
+                data = resp.read()
+                final_url = resp.geturl()
+                if verbose:
+                    print(f&quot;&lt; HTTP/1.1 {status} {resp.reason}&quot;, file=sys.stderr)
+                    for k, v in resp_headers:
+                        print(f&quot;&lt; {k}: {v}&quot;, file=sys.stderr)
+                    print(&quot;&lt;&quot;, file=sys.stderr)
+                return status, resp_headers, data, final_url
+        except urllib.error.HTTPError as e:
+            # 3xx: urllib 會先丟 HTTPError (因為我們擋下自動導向)
+            if e.code in (301, 302, 303, 307, 308):
+                if verbose:
+                    print(f&quot;&lt; HTTP/1.1 {e.code} {e.reason}&quot;, file=sys.stderr)
+                    for k, v in (e.headers.items() if e.headers else []):
+                        print(f&quot;&lt; {k}: {v}&quot;, file=sys.stderr)
+                    print(&quot;&lt;&quot;, file=sys.stderr)
+                if follow_redirects and redirects &lt; max_redirs:
+                    loc = e.headers.get(&quot;Location&quot;) if e.headers else None
+                    if not loc:
+                        raise
+                    current_url = urllib.parse.urljoin(current_url, loc)
+                    redirects += 1
+                    # 303 一律轉 GET; 301/302 若原方法是 POST 也轉 GET (同 curl 預設行為)
+                    if e.code == 303 or (e.code in (301, 302) and method == &quot;POST&quot;):
+                        method = &quot;GET&quot;
+                        body = None
+                    if verbose:
+                        print(f&quot;* 跟隨重新導向 ({redirects}): {current_url}&quot;, file=sys.stderr)
+                    continue
+                # 不跟隨: 把 3xx 當正常回應回傳
+                resp_headers = list(e.headers.items()) if e.headers else []
+                try:
+                    data = e.read()
+                except Exception:
+                    data = b&quot;&quot;
+                return e.code, resp_headers, data, current_url
+            # 4xx/5xx: 照常回傳 status + body, 由呼叫端依 --fail 決定結束碼
+            resp_headers = list(e.headers.items()) if e.headers else []
+            try:
+                data = e.read()
+            except Exception:
+                data = b&quot;&quot;
+            if verbose:
+                print(f&quot;&lt; HTTP/1.1 {e.code} {e.reason}&quot;, file=sys.stderr)
+                for k, v in resp_headers:
+                    print(f&quot;&lt; {k}: {v}&quot;, file=sys.stderr)
+                print(&quot;&lt;&quot;, file=sys.stderr)
+            return e.code, resp_headers, data, current_url
+
+
+def resolve_output_path(output, remote_name, url):
+    if output:
+        return output
+    if remote_name:
+        path = urllib.parse.urlparse(url).path.rstrip(&quot;/&quot;)
+        name = os.path.basename(path) or &quot;index.html&quot;
+        return name
+    return None
+
+
+def main(argv=None) -&gt; int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+
+    if args.version:
+        print(VERSION)
+        return 0
+    if not args.url:
+        parser.print_usage(sys.stderr)
+        print(&quot;mycurl: 需要提供 URL (例: mycurl https://example.com)&quot;, file=sys.stderr)
+        return 2
+    if not args.url.startswith((&quot;http://&quot;, &quot;https://&quot;)):
+        if not args.silent:
+            print(f&quot;mycurl: 不支援的 URL (只支援 http/https): {args.url}&quot;, file=sys.stderr)
+        return 2
+
+    # 方法
+    try:
+        body, is_json = load_data(args.data, args.json_data)
+    except FileNotFoundError as e:
+        if not args.silent:
+            print(f&quot;mycurl: 讀取資料檔失敗: {e}&quot;, file=sys.stderr)
+        return 26  # 對齊 curl 讀檔失敗結束碼
+    except OSError as e:
+        if not args.silent:
+            print(f&quot;mycurl: 讀取資料失敗: {e}&quot;, file=sys.stderr)
+        return 26
+
+    method = args.method or (&quot;POST&quot; if body is not None else &quot;GET&quot;)
+    method = method.upper()
+
+    # 標頭
+    headers = []
+    try:
+        for h in args.header:
+            headers.append(parse_header(h))
+    except ValueError as e:
+        if not args.silent:
+            print(f&quot;mycurl: {e}&quot;, file=sys.stderr)
+        return 2
+    header_keys = {k.lower() for k, _ in headers}
+    if &quot;user-agent&quot; not in header_keys:
+        headers.append((&quot;User-Agent&quot;, args.user_agent))
+    if body is not None and &quot;content-type&quot; not in header_keys:
+        headers.append((&quot;Content-Type&quot;,
+                        &quot;application/json&quot; if is_json else &quot;application/x-www-form-urlencoded&quot;))
+    if args.user:
+        if &quot;:&quot; not in args.user:
+            if not args.silent:
+                print(&quot;mycurl: -u 格式為 user:pass&quot;, file=sys.stderr)
+            return 2
+        token = base64.b64encode(args.user.encode()).decode()
+        headers.append((&quot;Authorization&quot;, f&quot;Basic {token}&quot;))
+    if body is not None and &quot;content-length&quot; not in header_keys:
+        headers.append((&quot;Content-Length&quot;, str(len(body))))
+
+    ssl_context = make_ssl_context(args.insecure)
+
+    try:
+        status, resp_headers, data, final_url = do_request(
+            args.url, method, headers, body, args.timeout, ssl_context,
+            args.location, args.max_redirs, args.verbose)
+    except urllib.error.URLError as e:
+        if not args.silent:
+            print(f&quot;mycurl: 連線失敗: {e.reason}&quot;, file=sys.stderr)
+        return 7  # 對齊 curl 連線失敗結束碼
+    except TimeoutError:
+        if not args.silent:
+            print(&quot;mycurl: 請求逾時&quot;, file=sys.stderr)
+        return 28
+    except OSError as e:
+        if not args.silent:
+            print(f&quot;mycurl: 請求失敗: {e}&quot;, file=sys.stderr)
+        return 7
+
+    is_error = status &gt;= 400
+    if args.fail and is_error:
+        if not args.silent:
+            print(f&quot;mycurl: HTTP {status} (使用 --fail, 不輸出 body)&quot;, file=sys.stderr)
+        return 22
+
+    out_path = resolve_output_path(args.output, args.remote_name, final_url)
+
+    # 組合輸出 (含 -i 標頭)
+    head = b&quot;&quot;
+    if args.include:
+        status_line = f&quot;HTTP/1.1 {status}\r\n&quot;.encode(&quot;latin-1&quot;)
+        hdr_lines = &quot;&quot;.join(f&quot;{k}: {v}\r\n&quot; for k, v in resp_headers).encode(&quot;latin-1&quot;)
+        head = status_line + hdr_lines + b&quot;\r\n&quot;
+
+    try:
+        if out_path:
+            with open(out_path, &quot;wb&quot;) as f:
+                f.write(head + data)
+            if args.verbose:
+                print(f&quot;* 已儲存 {len(data)} bytes 到 {out_path}&quot;, file=sys.stderr)
+        else:
+            sys.stdout.buffer.write(head + data)
+            sys.stdout.buffer.flush()
+    except BrokenPipeError:
+        return 0
+    except OSError as e:
+        if not args.silent:
+            print(f&quot;mycurl: 寫入輸出失敗: {e}&quot;, file=sys.stderr)
+        return 23
+
+    return 22 if is_error else 0
+
+
+if __name__ == &quot;__main__&quot;:
+    sys.exit(main())
+</code></pre>
+</body>
+</html>
