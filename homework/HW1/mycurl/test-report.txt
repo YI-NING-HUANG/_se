@@ -1,0 +1,40 @@
+=== [1] python 版本 ===
+Python 3.12.10
+PASS: python 可執行
+=== [2] mycurl.py 基本指令 ===
+mycurl 0.1.0 (python stdlib only)
+PASS: mycurl.py --version
+PASS: mycurl.py --help
+=== [3] mycurl2.py 基本指令 ===
+mycurl2 0.1.0 (python stdlib only)
+PASS: mycurl2.py --version
+PASS: mycurl2.py --help
+=== [4] 單元測試 (本機 http.server, 不需外網) ===
+test_404_status (test_mycurl.MyCurlTest.test_404_status) ... ok
+test_cli_bad_header (test_mycurl.MyCurlTest.test_cli_bad_header) ... ok
+test_cli_fail_flag (test_mycurl.MyCurlTest.test_cli_fail_flag) ... ok
+test_cli_output_file (test_mycurl.MyCurlTest.test_cli_output_file) ... ok
+test_get (test_mycurl.MyCurlTest.test_get) ... ok
+test_load_data_join (test_mycurl.MyCurlTest.test_load_data_join) ... ok
+test_load_data_json (test_mycurl.MyCurlTest.test_load_data_json) ... ok
+test_parse_header_bad (test_mycurl.MyCurlTest.test_parse_header_bad) ... ok
+test_parse_header_ok (test_mycurl.MyCurlTest.test_parse_header_ok) ... ok
+test_post_with_header_and_data (test_mycurl.MyCurlTest.test_post_with_header_and_data) ... ok
+test_redirect_follow (test_mycurl.MyCurlTest.test_redirect_follow) ... ok
+test_redirect_no_follow (test_mycurl.MyCurlTest.test_redirect_no_follow) ... ok
+test_resolve_output_path (test_mycurl.MyCurlTest.test_resolve_output_path) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.750s
+
+OK
+PASS: unittest 全過
+=== [5] mycurl2.py 產生 index.html ===
+�w���� C:\Users\EleenH_user\_se\homework\HW1\mycurl\index.html (22233 chars, ���O 309 ���l�X)
+PASS: index.html 產生成功
+PASS: index.html 內容正確 (含 mycurl2 與原始碼)
+=== [6] 實機 CLI: 本機 http.server + mycurl.py GET ===
+PASS: 實機 GET 成功 (本機 server 取回 README)
+------------------------------
+結果: PASS=9 FAIL=0
+ALL CHECKS PASSED
