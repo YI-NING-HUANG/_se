@@ -5,10 +5,10 @@ PASS: python 可執行
 mycurl 0.1.0 (python stdlib only)
 PASS: mycurl.py --version
 PASS: mycurl.py --help
-=== [3] mycurl2.py 基本指令 ===
-mycurl2 0.1.0 (python stdlib only)
+=== [3] mycurl2.py 基本指令 (超集參數) ===
+mycurl2 0.2.0 (superset of mycurl 0.1.0 (python stdlib only))
 PASS: mycurl2.py --version
-PASS: mycurl2.py --help
+PASS: mycurl2.py 有 --serve/--html-out
 === [4] 單元測試 (本機 http.server, 不需外網) ===
 test_404_status (test_mycurl.MyCurlTest.test_404_status) ... ok
 test_cli_bad_header (test_mycurl.MyCurlTest.test_cli_bad_header) ... ok
@@ -25,16 +25,24 @@ test_redirect_no_follow (test_mycurl.MyCurlTest.test_redirect_no_follow) ... ok
 test_resolve_output_path (test_mycurl.MyCurlTest.test_resolve_output_path) ... ok
 
 ----------------------------------------------------------------------
-Ran 13 tests in 0.750s
+Ran 13 tests in 0.804s
 
 OK
 PASS: unittest 全過
-=== [5] mycurl2.py 產生 index.html ===
-�w���� C:\Users\EleenH_user\_se\homework\HW1\mycurl\index.html (22233 chars, ���O 309 ���l�X)
+=== [5] mycurl2.py 產生 index.html 介紹頁 ===
+已產生 C:\Users\EleenH_user\_se\homework\HW1\mycurl\index.html (內嵌 309 行原始碼)
 PASS: index.html 產生成功
 PASS: index.html 內容正確 (含 mycurl2 與原始碼)
 === [6] 實機 CLI: 本機 http.server + mycurl.py GET ===
 PASS: 實機 GET 成功 (本機 server 取回 README)
+=== [7] mycurl vs mycurl2 輸出一致 (同一請求) ===
+PASS: 兩支 body 輸出完全一致 (RC=0)
+PASS: 兩支 -i 標頭一致 (排除 Date)
+=== [8] mycurl2 --html-out 網頁報告 ===
+PASS: --html-out 報告正確 (含狀態與內容)
+=== [9] mycurl2 --serve 本機網頁介面 (用 mycurl.py 反查它) ===
+PASS: --serve 首頁有表單
+PASS: --serve 代發請求並回網頁
 ------------------------------
-結果: PASS=9 FAIL=0
+結果: PASS=14 FAIL=0
 ALL CHECKS PASSED

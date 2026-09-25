@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>mycurl — 類似 curl 的專案程式</title>
 <style>
-:root{--bg:#0f172a;--card:#1e293b;--line:#334155;--txt:#e2e8f0;--mut:#94a3b8;--acc:#38bdf8;--acc2:#a78bfa;--ok:#34d399}
+:root{--bg:#0f172a;--card:#1e293b;--line:#334155;--txt:#e2e8f0;--mut:#94a3b8;--acc:#38bdf8}
 *{box-sizing:border-box}
 body{margin:0;font-family:"Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.7}
 a{color:var(--acc)}
@@ -15,14 +15,14 @@ a{color:var(--acc)}
 .hero h1{font-size:32px;margin:8px 0;color:#fff}
 .hero p{color:var(--mut);max-width:640px;margin:0 auto}
 .btnrow{margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.btn{border:1px solid var(--line);background:var(--card);color:var(--txt);padding:10px 20px;border-radius:10px;cursor:pointer;text-decoration:none;font-size:15px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--txt);padding:10px 20px;border-radius:10px;text-decoration:none;font-size:15px}
 .btn.pri{background:var(--acc);border-color:var(--acc);color:#082f49;font-weight:700}
 .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:28px 0}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
 .card h3{margin:0 0 6px;font-size:17px}
 .card p{margin:0;color:var(--mut);font-size:14px}
 h2{margin:48px 0 12px;font-size:22px;border-left:5px solid var(--acc);padding-left:12px}
-table{width:100%;border-collapse:collapse;font-size:14px;background:var(--card);border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:14px;background:var(--card)}
 th,td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
 th{background:#0ea5e918;color:#fff}
 code,.cmd{font-family:Consolas,Menlo,monospace}
@@ -38,16 +38,23 @@ summary{cursor:pointer;font-weight:700}
 .foot{margin-top:56px;color:var(--mut);font-size:13px;text-align:center;border-top:1px solid var(--line);padding-top:18px}
 .tag{display:inline-block;font-size:12px;background:#020617;border:1px solid var(--line);border-radius:6px;padding:1px 8px;margin:2px}
 .kbd{background:#020617;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:0 7px;font-family:monospace}
+.steps{margin:18px 0;padding:0;list-style:none;counter-reset:st}
+.steps li{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px 62px;margin:0 0 12px}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:16px;top:14px;width:32px;height:32px;border-radius:50%;background:var(--acc);color:#082f49;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:15px}
+.ex{background:#020617;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13px;overflow-x:auto;white-space:pre;margin:10px 0;color:#a5f3c7}
+.req{color:var(--mut);font-size:14px}
 </style>
 </head>
 <body>
 <div class="hero">
-  <div class="badge">HW1 專案 · 請做一個類似 curl 的程式 (可用 AI · opencode + Big Pickle)</div>
+  <div class="badge">HW1 作業 · 做一個類似 curl 的程式</div>
   <h1>mycurl — 類似 curl 的專案程式</h1>
-  <p>只用 <b>Python 標準函式庫</b> 的最小可用版 curl：GET / POST / 標頭 / 存檔 / 導向 / 認證，一看就懂，雙擊即用。</p>
+  <p>只用 <b>Python 標準函式庫</b> 的最小可用版 curl：<code>mycurl.py</code> 發請求，
+  <code>mycurl2.py</code> 是它的超集——功能完全一樣，再加網頁呈現。</p>
   <div class="btnrow">
-    <a class="btn pri" href="#quick">快速開始</a>
-    <a class="btn" href="#compare">curl 對照表</a>
+    <a class="btn pri" href="#intro">專案簡介</a>
+    <a class="btn" href="#example">看範例</a>
+    <a class="btn" href="#quick">快速開始</a>
     <a class="btn" href="#src">看完整原始碼 (309 行)</a>
   </div>
 </div>
@@ -56,20 +63,69 @@ summary{cursor:pointer;font-weight:700}
   <div class="grid3">
     <div class="card"><h3>📦 零依賴</h3><p>只用 <code>urllib + ssl + argparse</code>，不用 <code>pip install</code>，Windows / macOS / Linux 都能跑。</p></div>
     <div class="card"><h3>🔁 對齊 curl</h3><p>參數與結束碼對齊 curl：<span class="tag">-X</span><span class="tag">-H</span><span class="tag">-d</span><span class="tag">-o/-O</span><span class="tag">-i/-v/-L</span><span class="tag">--fail</span>，學會 curl 就會 mycurl。</p></div>
-    <div class="card"><h3>🤖 AI 開發</h3><p>用 <b>opencode + Big Pickle / Muse Spark</b> 產生 + 人工審查，plan → build → <code>unittest</code> 驗證。</p></div>
+    <div class="card"><h3>🌐 mycurl2 超集</h3><p>直接 import mycurl 核心，行為保證一致，另加 <span class="tag">--html-out</span><span class="tag">--serve</span> 把結果變成網頁。</p></div>
   </div>
 
-  <h2>1 · 它在做什麼？（30 秒看懂）</h2>
-  <div class="flow"><b>你</b><span>→</span><b>mycurl.py URL -v -L</b><span>→</span><b>Internet (http/https)</b><span>→</span><b>印出 body / 存檔</b></div>
+  <h2 id="intro">1 · 專案簡介（動機與介紹）</h2>
+  <p><b>mycurl</b> 是一個「最小可用版的 curl」：用<b>純 Python 標準函式庫</b>寫成的命令列 HTTP 客戶端。你在終端機給它 URL 和選項，它就發出 HTTP 請求，把伺服器回傳的內容印出來或存成檔案。</p>
+  <p><b>為什麼做這個？</b>curl 是每個工程師都會用到的網路工具，但它功能龐大、原始碼複雜。這個專案的動機就是「把最常用的那一圈功能親手做出來」：只用 <code>urllib + ssl + argparse</code>、不裝任何套件，藉此搞懂 HTTP 請求/回應、命令列參數設計、以及結束碼與輸出流這些實務細節。<code>mycurl2.py</code> 則是它的超集——直接沿用同一套核心，再把結果包裝成網頁，方便展示與操作。</p>
+
+  <h2 id="example">2 · 舉個例子</h2>
+  <p>在 repo 根目錄執行這一行：</p>
+  <div class="cmd">python homework/HW1/mycurl/mycurl.py https://example.com<button onclick="copy(this)">複製</button></div>
+  <p>發生了什麼事？</p>
+  <ol class="tight">
+    <li>mycurl 對 <code>example.com</code> 發出 <code>GET / HTTP/1.1</code> 請求。</li>
+    <li>伺服器回傳 <code>HTTP 200</code> 加上一份 HTML（body）。</li>
+    <li>mycurl 把 body 原樣印到終端機，你會看到：</li>
+  </ol>
+  <div class="ex">&lt;!doctype html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Example Domain&lt;/title&gt;…</div>
+  <p class="req">就這樣——給 URL，拿回內容。這就是整個專案的核心。</p>
+
+  <h2 id="req">3 · 設備需求</h2>
   <ul>
-    <li><b>輸入：</b>URL + 選項（方法、標頭、資料、存檔、除錯）</li>
-    <li><b>處理：</b>組 request → 擋自動導向、需要才手動跟 <span class="kbd">-L</span> → 讀 status + headers + body</li>
-    <li><b>輸出：</b>body 走 <code>stdout</code>（可 pipe / <span class="kbd">-o</span> 存檔），過程走 <code>stderr</code>（<span class="kbd">-v</span> 不污染存檔）</li>
+    <li><b>Python 3.8 以上</b>，僅此一樣。先檢查版本：</li>
+  </ul>
+  <div class="cmd">python --version<button onclick="copy(this)">複製</button></div>
+  <ul>
+    <li><b>不用安裝任何套件</b>：只用標準函式庫（<code>urllib / ssl / argparse</code>），沒有 <code>pip install</code>，拿到就能跑。</li>
+    <li><b>作業系統</b>：Windows / macOS / Linux 都可以。</li>
+    <li><b>Windows 注意</b>：如果是 Microsoft Store 帶的假 python，請改去 python.org 安裝正版 Python。</li>
   </ul>
 
-  <h2 id="compare">2 · curl 對照表</h2>
+  <h2 id="usage">4 · 使用方法</h2>
+  <p>基本語法：</p>
+  <div class="cmd">python homework/HW1/mycurl/mycurl.py [選項] URL<button onclick="copy(this)">複製</button></div>
+  <ul>
+    <li><b>指定方法</b>：<code>-X POST</code>；不指定時，有 <code>-d</code> 就是 POST，否則 GET。</li>
+    <li><b>自訂請求</b>：<code>-H "Key: Value"</code> 加標頭（可重複）；<code>-d "a=1"</code> 送資料，<code>@檔案</code> 從檔讀；<code>--json '{"a":1}'</code> 送 JSON。</li>
+    <li><b>輸出控制</b>：預設 body 印到螢幕；<code>-o 檔名</code> 存檔；<code>-i</code> 連回應標頭一起顯示。</li>
+    <li><b>除錯與行為</b>：<code>-v</code> 顯示來往過程；<code>-L</code> 跟隨重新導向；<code>--fail</code> 遇到 HTTP 錯誤回結束碼 22；<code>-s</code> 安靜模式。</li>
+  </ul>
+  <p class="req">完整參數對照見第 6 節；想用瀏覽器操作，見第 7 節的 mycurl2 網頁加值。</p>
+
+  <h2 id="quick">5 · 快速開始（首次操作流程）</h2>
+  <p>第一次用，跟著這五步走：</p>
+  <ol class="steps">
+    <li><b>開啟終端機</b>，切換到這個專案的根目錄（能看到 <code>homework/</code> 的那層）。</li>
+    <li><b>確認 Python</b>：執行下面這行，有印出 <code>Python 3.8</code> 以上就算過關。
+      <div class="cmd">python --version<button onclick="copy(this)">複製</button></div></li>
+    <li><b>跑第一個請求</b>：複製執行下面這行，看到一堆 HTML 印出來就是成功。
+      <div class="cmd">python homework/HW1/mycurl/mycurl.py https://example.com<button onclick="copy(this)">複製</button></div></li>
+    <li><b>加上選項玩玩看</b>：<code>-v</code> 看來往過程，<code>-i</code> 看回應標頭。
+      <div class="cmd">python homework/HW1/mycurl/mycurl.py -v https://httpbin.org/get<button onclick="copy(this)">複製</button></div></li>
+    <li><b>存成檔案或網頁</b>：<code>-o</code> 存 body；想看排版過的就用 mycurl2。
+      <div class="cmd">python homework/HW1/mycurl/mycurl.py -H "X-Token: abc" -i -o out.json https://httpbin.org/get<button onclick="copy(this)">複製</button></div>
+      <div class="cmd">python homework/HW1/mycurl/mycurl2.py -i https://example.com --html-out report.html<button onclick="copy(this)">複製</button></div></li>
+  </ol>
+  <p class="req">想跑完整驗證（含 13 個單元測試）：</p>
+  <div class="cmd">python -m unittest discover -s homework/HW1/mycurl/tests -v<button onclick="copy(this)">複製</button></div>
+
+  <h2 id="compare">6 · curl 對照表</h2>
   <table>
-    <tr><th>curl</th><th>mycurl</th><th>說明</th></tr>
+    <tr><th>curl</th><th>mycurl / mycurl2</th><th>說明</th></tr>
     <tr><td><code>curl URL</code></td><td><code>python mycurl.py URL</code></td><td>GET 並把 body 印到 stdout</td></tr>
     <tr><td><code>-X POST</code></td><td>相同</td><td>預設有 <code>-d</code> 則 POST，否則 GET</td></tr>
     <tr><td><code>-H "K: V"</code></td><td>相同（可重複）</td><td>自訂標頭</td></tr>
@@ -81,41 +137,29 @@ summary{cursor:pointer;font-weight:700}
   </table>
   <p style="color:var(--mut);font-size:13px">結束碼對齊 curl：0 成功 · 2 參數錯誤 · 7 連線失敗 · 22 HTTP 錯誤(+--fail) · 23 寫檔失敗 · 26 讀檔失敗 · 28 逾時</p>
 
-  <h2 id="quick">3 · 快速開始（複製即用）</h2>
-  <div class="cmd">python homework/HW1/mycurl/mycurl.py https://example.com<button onclick="copy(this)">複製</button></div>
-  <div class="cmd">python homework/HW1/mycurl/mycurl.py -v https://httpbin.org/get<button onclick="copy(this)">複製</button></div>
-  <div class="cmd">python homework/HW1/mycurl/mycurl.py -d "a=1&amp;b=2" https://httpbin.org/post<button onclick="copy(this)">複製</button></div>
-  <div class="cmd">python homework/HW1/mycurl/mycurl.py --json '{"hello":"world"}' https://httpbin.org/post<button onclick="copy(this)">複製</button></div>
-  <div class="cmd">python homework/HW1/mycurl/mycurl.py -H "X-Token: abc" -i -o out.json https://httpbin.org/get<button onclick="copy(this)">複製</button></div>
-  <div class="cmd">python homework/HW1/mycurl/mycurl.py -L -v http://github.com<button onclick="copy(this)">複製</button></div>
-  <div class="cmd">python -m unittest discover -s homework/HW1/mycurl/tests -v<button onclick="copy(this)">複製</button></div>
+  <h2 id="web">7 · mycurl2 多了什麼（超集加值）</h2>
+  <ol class="tight">
+    <li><code>--html-out FILE</code>：請求照常用 mycurl 核心發送，回應額外包裝成排版過的 HTML 報告（狀態、請求/回應標頭、內容預覽），雙擊用瀏覽器開。</li>
+    <li><code>--serve [PORT]</code>：啟動本機網頁操作介面（只聽 127.0.0.1），瀏覽器填 URL/方法/標頭/資料，後端發送後結果直接顯示成網頁。</li>
+    <li><code>--demo-out FILE</code>：產生本介紹頁。因為核心是 import 自 mycurl.py，行為保證與 mycurl 一致。</li>
+  </ol>
 
-  <h2>4 · 實作重點（報告可寫）</h2>
+  <h2>8 · 實作重點（報告可寫）</h2>
   <ol class="tight">
     <li>自訂 <code>NoRedirect(HTTPRedirectHandler)</code> 擋掉自動導向，自己依 <code>-L</code> 手動跟，<code>-v</code> 才能印出每一站的 <code>&gt;</code> / <code>&lt;</code>。</li>
     <li><code>HTTPError</code> 照常回傳 status + body，只有加 <code>--fail</code> 才回結束碼 22。</li>
     <li>body 用 <code>sys.stdout.buffer</code> 寫 bytes（圖片/二進位不爛掉）；<code>-v</code> 全走 stderr，不污染 pipe / 存檔。</li>
-    <li>本頁就是用 <code>mycurl2.py</code>（同為 stdlib CLI）產生的：改完 <code>mycurl.py</code> 再跑一次即更新 HTML，保證「之後的更改也能用 HTML 開」。</li>
-  </ol>
-  <div class="cmd">python homework/HW1/mycurl/mycurl2.py -o homework/HW1/mycurl/index.html<button onclick="copy(this)">複製</button></div>
-
-  <h2>5 · AI 使用說明（opencode + Big Pickle）</h2>
-  <ol class="tight">
-    <li>在專案目錄跑 <code>opencode</code>，模型選 Big Pickle（免費）或 Muse。</li>
-    <li>先 plan 模式：「用 Python 標準函式庫做 curl 最小可用版，列出參數表」。</li>
-    <li>再 build 模式實作，跑 <code>python -m unittest</code> 驗證（13 個測試，本機 http.server，不需外網）。</li>
-    <li>本次即用 Muse Spark 按此流程完成，報告註明模型與日期即可。</li>
+    <li>mycurl2 的 parser 直接繼承 mycurl，請求核心直接呼叫 <code>do_request</code>，所以「功能一樣」是結構保證，不是口頭保證。</li>
   </ol>
 
-  <h2>6 · 專案結構</h2>
+  <h2>9 · 專案結構</h2>
   <div class="cmd">homework/HW1/mycurl/
-  mycurl.py      # 主程式 (約 309 行)
-  mycurl2.py  # 本頁產生器 (stdlib CLI, 重新產生 HTML 用)
+  mycurl.py      # 主程式 (約 309 行, 核心)
+  mycurl2.py     # 超集: import mycurl + --html-out/--serve/--demo-out
   index.html     # 本頁 (雙擊用瀏覽器開)
-  mycurl.html    # mycurl.py 純碼版
   tests/         # 13 個測試</div>
 
-  <h2 id="src">7 · 完整原始碼（mycurl.py）</h2>
+  <h2 id="src">10 · 完整原始碼（mycurl.py）</h2>
   <details open>
     <summary>點我展開 / 收合 · 共 309 行</summary>
     <pre class="src"><code>#!/usr/bin/env python3
@@ -430,7 +474,62 @@ if __name__ == &quot;__main__&quot;:
 </code></pre>
   </details>
 
-  <div class="foot">mycurl · HW1 · 類似 curl 的專案程式 · 用 opencode + Big Pickle / Muse Spark 開發 · Python 標準函式庫 only</div>
+  <h2 id="test">11 · test.sh 測試結果</h2>
+  <p>一鍵檢測 <code>bash homework/HW1/mycurl/test.sh</code> 的最新結果：<b>PASS=14 FAIL=0</b>（含 mycurl / mycurl2 基本指令、13 個單元測試、實機請求、兩支輸出一致性、--html-out、--serve）。完整過程：</p>
+  <details>
+    <summary>點我展開完整檢測紀錄</summary>
+    <pre class="src"><code>=== [1] python 版本 ===
+Python 3.12.10
+PASS: python 可執行
+=== [2] mycurl.py 基本指令 ===
+mycurl 0.1.0 (python stdlib only)
+PASS: mycurl.py --version
+PASS: mycurl.py --help
+=== [3] mycurl2.py 基本指令 (超集參數) ===
+mycurl2 0.2.0 (superset of mycurl 0.1.0 (python stdlib only))
+PASS: mycurl2.py --version
+PASS: mycurl2.py 有 --serve/--html-out
+=== [4] 單元測試 (本機 http.server, 不需外網) ===
+test_404_status (test_mycurl.MyCurlTest.test_404_status) ... ok
+test_cli_bad_header (test_mycurl.MyCurlTest.test_cli_bad_header) ... ok
+test_cli_fail_flag (test_mycurl.MyCurlTest.test_cli_fail_flag) ... ok
+test_cli_output_file (test_mycurl.MyCurlTest.test_cli_output_file) ... ok
+test_get (test_mycurl.MyCurlTest.test_get) ... ok
+test_load_data_join (test_mycurl.MyCurlTest.test_load_data_join) ... ok
+test_load_data_json (test_mycurl.MyCurlTest.test_load_data_json) ... ok
+test_parse_header_bad (test_mycurl.MyCurlTest.test_parse_header_bad) ... ok
+test_parse_header_ok (test_mycurl.MyCurlTest.test_parse_header_ok) ... ok
+test_post_with_header_and_data (test_mycurl.MyCurlTest.test_post_with_header_and_data) ... ok
+test_redirect_follow (test_mycurl.MyCurlTest.test_redirect_follow) ... ok
+test_redirect_no_follow (test_mycurl.MyCurlTest.test_redirect_no_follow) ... ok
+test_resolve_output_path (test_mycurl.MyCurlTest.test_resolve_output_path) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.804s
+
+OK
+PASS: unittest 全過
+=== [5] mycurl2.py 產生 index.html 介紹頁 ===
+已產生 C:\Users\EleenH_user\_se\homework\HW1\mycurl\index.html (內嵌 309 行原始碼)
+PASS: index.html 產生成功
+PASS: index.html 內容正確 (含 mycurl2 與原始碼)
+=== [6] 實機 CLI: 本機 http.server + mycurl.py GET ===
+PASS: 實機 GET 成功 (本機 server 取回 README)
+=== [7] mycurl vs mycurl2 輸出一致 (同一請求) ===
+PASS: 兩支 body 輸出完全一致 (RC=0)
+PASS: 兩支 -i 標頭一致 (排除 Date)
+=== [8] mycurl2 --html-out 網頁報告 ===
+PASS: --html-out 報告正確 (含狀態與內容)
+=== [9] mycurl2 --serve 本機網頁介面 (用 mycurl.py 反查它) ===
+PASS: --serve 首頁有表單
+PASS: --serve 代發請求並回網頁
+------------------------------
+結果: PASS=14 FAIL=0
+ALL CHECKS PASSED
+</code></pre>
+  </details>
+
+  <div class="foot">mycurl / mycurl2 · HW1 · 類似 curl 的專案程式 · Python 標準函式庫 only</div>
 </div>
 <script>
 function copy(btn){
