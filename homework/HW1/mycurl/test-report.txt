@@ -25,7 +25,7 @@ test_redirect_no_follow (test_mycurl.MyCurlTest.test_redirect_no_follow) ... ok
 test_resolve_output_path (test_mycurl.MyCurlTest.test_resolve_output_path) ... ok
 
 ----------------------------------------------------------------------
-Ran 13 tests in 0.804s
+Ran 13 tests in 0.755s
 
 OK
 PASS: unittest 全過
