@@ -1,0 +1,315 @@
+<!doctype html><html lang='zh-Hant'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>app.py</title><style>body{font-family:sans-serif;max-width:960px;margin:24px auto;padding:0 16px;line-height:1.7}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px 8px;font-size:14px}th{background:#f2f2f2}pre{background:#f6f6f6;padding:12px;overflow:auto}nav a{margin-right:12px}</style></head><body><nav><a href='index.html'>展示首頁</a><a href='school.html'>school.py 原始碼</a><a href='app.html'>app.py 原始碼</a></nav><hr><h1>app.py (314 行)</h1><pre>#!/usr/bin/env python3
+&quot;&quot;&quot;HW2 app1: 金大校務系統 v1.0 選課核心 (純標準函式庫, 不需 pip).
+
+用法:
+  python app.py --initdb                 # 重建 school.db + 灌假資料
+  python app.py --serve [PORT]           # 開網頁, 預設 8080, 只聽 127.0.0.1
+  python app.py --demo-out index.html    # 產生靜態展示頁(老師免跑 server 也能看)
+  python app.py --version / --help
+&quot;&quot;&quot;
+import argparse
+import html
+import json
+import os
+import urllib.parse
+from http.cookies import SimpleCookie
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+import school
+
+VERSION = &quot;1.0.0&quot;
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, &quot;school.db&quot;)
+DEMO_ACCOUNTS = &quot;s001 / 1234&quot;
+
+
+def current_sid(handler):
+    cookie = handler.headers.get(&quot;Cookie&quot;, &quot;&quot;)
+    c = SimpleCookie()
+    try:
+        c.load(cookie)
+    except Exception:
+        return &quot;&quot;
+    return c[&quot;sid&quot;].value if &quot;sid&quot; in c else &quot;&quot;
+
+
+def send_html(handler, body, status=200, extra_headers=None):
+    data = (&quot;&lt;!doctype html&gt;&lt;html lang=&#x27;zh-Hant&#x27;&gt;&lt;head&gt;&lt;meta charset=&#x27;utf-8&#x27;&gt;&quot;
+            &quot;&lt;meta name=&#x27;viewport&#x27; content=&#x27;width=device-width,initial-scale=1&#x27;&gt;&quot;
+            &quot;&lt;title&gt;金大校務系統 v1.0&lt;/title&gt;&quot;
+            &quot;&lt;style&gt;body{font-family:sans-serif;max-width:900px;margin:24px auto;&quot;
+            &quot;padding:0 16px;background:#f7f9fc}&quot;
+            &quot;table{border-collapse:collapse;width:100%;background:#fff}&quot;
+            &quot;td,th{border:1px solid #ccc;padding:6px 8px;font-size:14px}&quot;
+            &quot;th{background:#eef2f7}&quot;
+            &quot;nav{background:#1a56db;padding:10px 12px;border-radius:8px}&quot;
+            &quot;nav a{display:inline-block;margin-right:8px;padding:6px 14px;&quot;
+            &quot;border-radius:6px;color:#fff;text-decoration:none;font-weight:bold}&quot;
+            &quot;nav a.courses{background:#0b9e4b}nav a.schedule{background:#e67e0e}&quot;
+            &quot;nav a.logout{background:#c0392b}.msg{color:#b00}&lt;/style&gt;&quot;
+            &quot;&lt;/head&gt;&lt;body&gt;&quot;
+            &quot;&lt;nav&gt;&lt;a class=&#x27;courses&#x27; href=&#x27;/courses&#x27;&gt;課程&lt;/a&gt;&quot;
+            &quot;&lt;a class=&#x27;schedule&#x27; href=&#x27;/schedule&#x27;&gt;我的課表&lt;/a&gt;&quot;
+            &quot;&lt;a class=&#x27;logout&#x27; href=&#x27;/logout&#x27;&gt;登出&lt;/a&gt;&lt;/nav&gt;&lt;hr&gt;&quot;
+            + body + &quot;&lt;/body&gt;&lt;/html&gt;&quot;)
+    raw = data.encode(&quot;utf-8&quot;)
+    handler.send_response(status)
+    handler.send_header(&quot;Content-Type&quot;, &quot;text/html; charset=utf-8&quot;)
+    handler.send_header(&quot;Content-Length&quot;, str(len(raw)))
+    for k, v in (extra_headers or {}).items():
+        handler.send_header(k, v)
+    handler.end_headers()
+    handler.wfile.write(raw)
+
+
+def login_page(msg=&quot;&quot;):
+    m = &quot;&lt;p class=&#x27;msg&#x27;&gt;%s&lt;/p&gt;&quot; % html.escape(msg) if msg else &quot;&quot;
+    return (&quot;&lt;h2&gt;金大校務系統 v1.0 登入&lt;/h2&gt;&quot; + m +
+            &quot;&lt;form method=&#x27;post&#x27; action=&#x27;/login&#x27;&gt;&quot;
+            &quot;學號 &lt;input name=&#x27;uid&#x27; value=&#x27;s001&#x27;&gt; 密碼 &quot;
+            &quot;&lt;input type=&#x27;password&#x27; name=&#x27;password&#x27; value=&#x27;1234&#x27;&gt;&quot;
+            &quot;&lt;button&gt;登入&lt;/button&gt;&lt;/form&gt;&quot;
+            &quot;&lt;p&gt;展示帳號: s001/s002/s003, 密碼皆 1234&lt;/p&gt;&quot;)
+
+
+def courses_page(db, sid, msg=&quot;&quot;, keyword=&quot;&quot;, dept=&quot;&quot;):
+    rows = school.list_courses(db, keyword, dept)
+    depts = school.list_depts(db)
+    m = &quot;&lt;p class=&#x27;msg&#x27;&gt;%s&lt;/p&gt;&quot; % html.escape(msg) if msg else &quot;&quot;
+    q = html.escape(keyword)
+    opts = &quot;&lt;option value=&#x27;&#x27;&gt;全部科系&lt;/option&gt;&quot; + &quot;&quot;.join(
+        &quot;&lt;option value=&#x27;%s&#x27;%s&gt;%s&lt;/option&gt;&quot; % (
+            html.escape(d), &quot; selected&quot; if d == dept else &quot;&quot;, html.escape(d))
+        for d in depts)
+    h = [&quot;&lt;h2&gt;課程查詢 / 選課 (學號:%s)&lt;/h2&gt;&quot; % html.escape(sid), m,
+         &quot;&lt;form method=&#x27;get&#x27; action=&#x27;/courses&#x27;&gt;&quot;
+         &quot;&lt;select name=&#x27;dept&#x27; onchange=&#x27;this.form.submit()&#x27;&gt;%s&lt;/select&gt; &quot;
+         &quot;&lt;input name=&#x27;q&#x27; value=&#x27;%s&#x27; placeholder=&#x27;課號/課名/老師&#x27;&gt;&quot;
+         &quot;&lt;button&gt;搜尋&lt;/button&gt;&lt;/form&gt;&quot; % (opts, q),
+         &quot;&lt;table&gt;&lt;tr&gt;&lt;th&gt;課號&lt;/th&gt;&lt;th&gt;科系&lt;/th&gt;&lt;th&gt;課名&lt;/th&gt;&lt;th&gt;老師&lt;/th&gt;&lt;th&gt;學分&lt;/th&gt;&quot;
+         &quot;&lt;th&gt;時間&lt;/th&gt;&lt;th&gt;已選/上限&lt;/th&gt;&lt;th&gt;操作&lt;/th&gt;&lt;/tr&gt;&quot;]
+    for c in rows:
+        h.append(&quot;&lt;tr&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&quot;
+                 &quot;&lt;td&gt;%s&lt;/td&gt;&quot;
+                 &quot;&lt;td&gt;%s/%s&lt;/td&gt;&lt;td&gt;&quot;
+                 &quot;&lt;form style=&#x27;display:inline&#x27; method=&#x27;post&#x27; action=&#x27;/select&#x27;&gt;&quot;
+                 &quot;&lt;input type=&#x27;hidden&#x27; name=&#x27;course_id&#x27; value=&#x27;%s&#x27;&gt;&quot;
+                 &quot;&lt;button&gt;加選&lt;/button&gt;&lt;/form&gt; &quot;
+                 &quot;&lt;form style=&#x27;display:inline&#x27; method=&#x27;post&#x27; action=&#x27;/drop&#x27;&gt;&quot;
+                 &quot;&lt;input type=&#x27;hidden&#x27; name=&#x27;course_id&#x27; value=&#x27;%s&#x27;&gt;&quot;
+                 &quot;&lt;button&gt;退選&lt;/button&gt;&lt;/form&gt;&lt;/td&gt;&lt;/tr&gt;&quot; % (
+                     html.escape(c[&quot;id&quot;]), html.escape(c[&quot;dept&quot;]),
+                     html.escape(c[&quot;name&quot;]),
+                     html.escape(c[&quot;teacher&quot;]), c[&quot;credits&quot;],
+                     html.escape(c[&quot;time_slot&quot;]), c[&quot;enrolled&quot;], c[&quot;capacity&quot;],
+                     html.escape(c[&quot;id&quot;]), html.escape(c[&quot;id&quot;])))
+    h.append(&quot;&lt;/table&gt;&quot;)
+    return &quot;&quot;.join(h)
+
+
+def schedule_page(db, sid, msg=&quot;&quot;):
+    rows = school.get_schedule(db, sid)
+    total = sum(r[&quot;credits&quot;] for r in rows)
+    m = &quot;&lt;p class=&#x27;msg&#x27;&gt;%s&lt;/p&gt;&quot; % html.escape(msg) if msg else &quot;&quot;
+    h = [&quot;&lt;h2&gt;我的課表 (學號:%s, 共 %d 學分)&lt;/h2&gt;&quot; % (html.escape(sid), total), m,
+         &quot;&lt;table&gt;&lt;tr&gt;&lt;th&gt;課號&lt;/th&gt;&lt;th&gt;課名&lt;/th&gt;&lt;th&gt;學分&lt;/th&gt;&lt;th&gt;時間&lt;/th&gt;&quot;
+         &quot;&lt;th&gt;操作&lt;/th&gt;&lt;/tr&gt;&quot;]
+    for c in rows:
+        h.append(&quot;&lt;tr&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;&quot;
+                 &quot;&lt;form method=&#x27;post&#x27; action=&#x27;/drop&#x27;&gt;&quot;
+                 &quot;&lt;input type=&#x27;hidden&#x27; name=&#x27;course_id&#x27; value=&#x27;%s&#x27;&gt;&quot;
+                 &quot;&lt;button&gt;退選&lt;/button&gt;&lt;/form&gt;&lt;/td&gt;&lt;/tr&gt;&quot; % (
+                     html.escape(c[&quot;id&quot;]), html.escape(c[&quot;name&quot;]),
+                     c[&quot;credits&quot;], html.escape(c[&quot;time_slot&quot;]),
+                     html.escape(c[&quot;id&quot;])))
+    h.append(&quot;&lt;/table&gt;&quot;)
+    return &quot;&quot;.join(h)
+
+
+class Handler(BaseHTTPRequestHandler):
+    server_version = &quot;NQU-School/1.0&quot;
+
+    def log_message(self, *a):
+        pass  # 保持 test.sh 輸出乾淨
+
+    def do_GET(self):
+        url = urllib.parse.urlsplit(self.path)
+        path, qs = url.path, urllib.parse.parse_qs(url.query)
+        sid = current_sid(self)
+        if path == &quot;/api/courses&quot;:
+            data = json.dumps(school.list_courses(DB_PATH,
+                              qs.get(&quot;q&quot;, [&quot;&quot;])[0], qs.get(&quot;dept&quot;, [&quot;&quot;])[0]),
+                              ensure_ascii=False)
+            raw = data.encode(&quot;utf-8&quot;)
+            self.send_response(200)
+            self.send_header(&quot;Content-Type&quot;, &quot;application/json; charset=utf-8&quot;)
+            self.send_header(&quot;Content-Length&quot;, str(len(raw)))
+            self.end_headers()
+            self.wfile.write(raw)
+            return
+        if path == &quot;/api/schedule&quot;:
+            who = qs.get(&quot;sid&quot;, [sid])[0]
+            data = json.dumps(school.get_schedule(DB_PATH, who),
+                              ensure_ascii=False)
+            raw = data.encode(&quot;utf-8&quot;)
+            self.send_response(200)
+            self.send_header(&quot;Content-Type&quot;, &quot;application/json; charset=utf-8&quot;)
+            self.send_header(&quot;Content-Length&quot;, str(len(raw)))
+            self.end_headers()
+            self.wfile.write(raw)
+            return
+        if path == &quot;/&quot; :
+            self.send_response(302)
+            self.send_header(&quot;Location&quot;, &quot;/courses&quot; if sid else &quot;/login&quot;)
+            self.end_headers()
+            return
+        if path == &quot;/login&quot;:
+            send_html(self, login_page())
+            return
+        if path == &quot;/logout&quot;:
+            self.send_response(302)
+            self.send_header(&quot;Location&quot;, &quot;/login&quot;)
+            self.send_header(&quot;Set-Cookie&quot;, &quot;sid=; Path=/; Max-Age=0&quot;)
+            self.end_headers()
+            return
+        if not sid:
+            self.send_response(302)
+            self.send_header(&quot;Location&quot;, &quot;/login&quot;)
+            self.end_headers()
+            return
+        if path == &quot;/courses&quot;:
+            send_html(self, courses_page(DB_PATH, sid,
+                      qs.get(&quot;msg&quot;, [&quot;&quot;])[0], qs.get(&quot;q&quot;, [&quot;&quot;])[0],
+                      qs.get(&quot;dept&quot;, [&quot;&quot;])[0]))
+            return
+        if path == &quot;/schedule&quot;:
+            send_html(self, schedule_page(DB_PATH, sid,
+                      qs.get(&quot;msg&quot;, [&quot;&quot;])[0]))
+            return
+        self.send_response(404)
+        self.end_headers()
+
+    def do_POST(self):
+        url = urllib.parse.urlsplit(self.path)
+        path = url.path
+        length = int(self.headers.get(&quot;Content-Length&quot;, 0))
+        fields = urllib.parse.parse_qs(
+            self.rfile.read(length).decode(&quot;utf-8&quot;, &quot;ignore&quot;))
+        get = lambda k: fields.get(k, [&quot;&quot;])[0]
+        if path == &quot;/login&quot;:
+            user = school.verify_user(DB_PATH, get(&quot;uid&quot;), get(&quot;password&quot;))
+            if user:
+                self.send_response(302)
+                self.send_header(&quot;Location&quot;, &quot;/courses&quot;)
+                self.send_header(&quot;Set-Cookie&quot;,
+                                 &quot;sid=%s; Path=/&quot; % user[&quot;id&quot;])
+                self.end_headers()
+            else:
+                send_html(self, login_page(&quot;帳號或密碼錯誤&quot;))
+            return
+        sid = current_sid(self)
+        if not sid:
+            self.send_response(302)
+            self.send_header(&quot;Location&quot;, &quot;/login&quot;)
+            self.end_headers()
+            return
+        if path == &quot;/select&quot;:
+            ok, msg = school.select_course(DB_PATH, sid, get(&quot;course_id&quot;))
+            dest = &quot;/courses?msg=&quot; + urllib.parse.quote(msg)
+            self.send_response(302)
+            self.send_header(&quot;Location&quot;, dest)
+            self.end_headers()
+            return
+        if path == &quot;/drop&quot;:
+            ok, msg = school.drop_course(DB_PATH, sid, get(&quot;course_id&quot;))
+            dest = &quot;/schedule?msg=&quot; + urllib.parse.quote(msg)
+            self.send_response(302)
+            self.send_header(&quot;Location&quot;, dest)
+            self.end_headers()
+            return
+        self.send_response(404)
+        self.end_headers()
+
+
+def build_parser():
+    p = argparse.ArgumentParser(description=&quot;金大校務系統 v1.0 (stdlib only)&quot;)
+    p.add_argument(&quot;--serve&quot;, nargs=&quot;?&quot;, const=8080, type=int, metavar=&quot;PORT&quot;,
+                   help=&quot;啟動網頁 (預設只聽 127.0.0.1, 對外用 --host 0.0.0.0)&quot;)
+    p.add_argument(&quot;--port&quot;, type=int, default=None, help=&quot;同 --serve 的埠號&quot;)
+    p.add_argument(&quot;--host&quot;, default=&quot;127.0.0.1&quot;,
+                   help=&quot;綁定位址: 127.0.0.1=只自己能開, 0.0.0.0=同 Wi-Fi 可開&quot;)
+    p.add_argument(&quot;--initdb&quot;, action=&quot;store_true&quot;, help=&quot;重建 school.db&quot;)
+    p.add_argument(&quot;--demo-out&quot;, metavar=&quot;FILE&quot;, help=&quot;產生靜態展示頁&quot;)
+    p.add_argument(&quot;--version&quot;, action=&quot;store_true&quot;)
+    return p
+
+
+def make_demo(out_path):
+    report = &quot;&quot;
+    rp = os.path.join(BASE_DIR, &quot;test-report.txt&quot;)
+    if os.path.exists(rp):
+        with open(rp, encoding=&quot;utf-8&quot;, errors=&quot;ignore&quot;) as f:
+            report = f.read()
+    rows = &quot;&quot;.join(&quot;&lt;tr&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&quot;
+                   &quot;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&lt;/tr&gt;&quot; % c
+                   for c in school.SEED_COURSES)
+    body = &quot;&quot;&quot;&lt;h1&gt;金大校務系統 v1.0 (app1 選課核心)&lt;/h1&gt;
+&lt;p&gt;純 Python 標準函式庫 + sqlite3, 不需 pip install。展示帳號: s001/1234。&lt;/p&gt;
+&lt;h2&gt;啟動&lt;/h2&gt;&lt;pre&gt;python app.py --initdb
+python app.py --serve 8080
+# 開 http://127.0.0.1:8080/ &lt;/pre&gt;
+&lt;h2&gt;功能&lt;/h2&gt;&lt;ul&gt;&lt;li&gt;登入/登出&lt;/li&gt;&lt;li&gt;課程查詢：科系下拉選單 + 關鍵字搜尋&lt;/li&gt;
+&lt;li&gt;加選/退選, 擋修: 額滿/衝堂/學分上限(%d)/重複&lt;/li&gt;&lt;li&gt;我的課表與學分統計&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;預設課程&lt;/h2&gt;&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;課號&lt;/th&gt;&lt;th&gt;科系&lt;/th&gt;&lt;th&gt;課名&lt;/th&gt;&lt;th&gt;老師&lt;/th&gt;&lt;th&gt;學分&lt;/th&gt;&lt;th&gt;上限&lt;/th&gt;&lt;th&gt;時間&lt;/th&gt;&lt;/tr&gt;%s&lt;/table&gt;
+&lt;h2&gt;檢測報告 (test-report.txt)&lt;/h2&gt;&lt;pre&gt;%s&lt;/pre&gt;&quot;&quot;&quot; % (
+        school.MAX_CREDITS, rows, html.escape(report))
+    page = (&quot;&lt;!doctype html&gt;&lt;html lang=&#x27;zh-Hant&#x27;&gt;&lt;head&gt;&lt;meta charset=&#x27;utf-8&#x27;&gt;&quot;
+            &quot;&lt;title&gt;金大校務系統 v1.0 展示&lt;/title&gt;&lt;/head&gt;&lt;body&gt;%s&lt;/body&gt;&lt;/html&gt;&quot;
+            % body)
+    with open(out_path, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+        f.write(page)
+    print(&quot;已產生 %s&quot; % out_path)
+
+
+def main(argv=None):
+    args = build_parser().parse_args(argv)
+    if args.version:
+        print(&quot;nqu-school-app1 %s (python stdlib only)&quot; % VERSION)
+        return 0
+    if args.initdb:
+        school.seed_db(DB_PATH)
+        print(&quot;已重建 %s&quot; % DB_PATH)
+        return 0
+    if args.demo_out:
+        make_demo(args.demo_out)
+        return 0
+    port = args.serve if args.serve else args.port
+    if port:
+        if not os.path.exists(DB_PATH):
+            school.seed_db(DB_PATH)
+        host = args.host
+        srv = HTTPServer((host, int(port)), Handler)
+        print(&quot;serving http://%s:%d/ (Ctrl-C 停止)&quot; % (host, int(port)))
+        if host == &quot;0.0.0.0&quot;:
+            import socket
+            try:
+                lan = socket.gethostbyname(socket.gethostname())
+            except Exception:
+                lan = &quot;你的區網IP&quot;
+            print(&quot;同 Wi-Fi 的人開 http://%s:%d/ (需同網路+防火牆放行)&quot;
+                  % (lan, int(port)))
+            print(&quot;注意: 127.0.0.1 只代表你自己這台, 別人打不開是正常的; &quot;
+                  &quot;要給全網際網路的人開需部署上雲 (見 README)。&quot;)
+        try:
+            srv.serve_forever()
+        except KeyboardInterrupt:
+            pass
+        return 0
+    build_parser().print_help()
+    return 0
+
+
+if __name__ == &quot;__main__&quot;:
+    raise SystemExit(main())
+</pre></body></html>

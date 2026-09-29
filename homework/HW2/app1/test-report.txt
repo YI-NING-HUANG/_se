@@ -1,0 +1,46 @@
+=== [1] python 版本 (stdlib only, 不需 flask) ===
+Python 3.12.10
+PASS: python 可執行
+sqlite3 ok
+PASS: sqlite3 內建可用
+=== [2] app.py 基本指令 ===
+nqu-school-app1 1.0.0 (python stdlib only)
+PASS: app.py --version
+PASS: app.py --help
+=== [3] 單元測試 (不需開 server, 不需外網) ===
+test_drop (test_school.SchoolTest.test_drop) ... ok
+test_login_fail (test_school.SchoolTest.test_login_fail) ... ok
+test_login_ok (test_school.SchoolTest.test_login_ok) ... ok
+test_search (test_school.SchoolTest.test_search) ... ok
+test_select_conflict (test_school.SchoolTest.test_select_conflict) ... ok
+test_select_credit_limit (test_school.SchoolTest.test_select_credit_limit) ... ok
+test_select_duplicate (test_school.SchoolTest.test_select_duplicate) ... ok
+test_select_full (test_school.SchoolTest.test_select_full) ... ok
+test_select_ok (test_school.SchoolTest.test_select_ok) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.472s
+
+OK
+PASS: unittest 全過
+=== [4] 重建資料庫 + 種子資料 ===
+已重建 C:\Users\EleenH_user\_se\homework\HW2\app1\school.db
+PASS: --initdb 重建成功
+courses: 10
+PASS: 種子課程 >=10 筆
+=== [5] 產生 index.html 展示頁 (老師免跑 server 也能看) ===
+已產生 homework/HW2/app1/index.html
+PASS: index.html 產生成功
+PASS: index.html 內容正確
+=== [6] 實機 smoke: 啟動 server + 查頁面與 API (只用本機 127.0.0.1) ===
+login page ok
+PASS: /login 有登入表單
+api courses: 10
+PASS: /api/courses >=10 筆
+=== [7] 端到端: 登入→加選→課表→衝堂擋→退選 (經 HTTP) ===
+已重建 C:\Users\EleenH_user\_se\homework\HW2\app1\school.db
+e2e ok
+PASS: HTTP 端到端全過 (選課/衝堂/退選)
+------------------------------
+結果: PASS=12 FAIL=0
+ALL CHECKS PASSED

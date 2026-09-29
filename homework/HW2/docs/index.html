@@ -1,0 +1,81 @@
+<!doctype html><html lang='zh-Hant'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>金大校務系統 v1.0.0 展示</title><style>body{font-family:sans-serif;max-width:960px;margin:24px auto;padding:0 16px;line-height:1.7}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px 8px;font-size:14px}th{background:#f2f2f2}pre{background:#f6f6f6;padding:12px;overflow:auto}nav a{margin-right:12px}</style></head><body><nav><a href='index.html'>展示首頁</a><a href='school.html'>school.py 原始碼</a><a href='app.html'>app.py 原始碼</a></nav><hr><h1>金大校務系統 v%s 展示頁</h1>
+<p>純 Python 標準函式庫 + sqlite3, 不需 pip install。
+本專案所有人名皆為<b>虛構假名</b>, 與現實人物無關。
+課程橫跨多系所 (資工/電機/企管/觀光/食品/護理/社工/通識/體育/語文),
+取材自綜合型大學常見開課, 非單一系所。</p>
+<h2>怎麼看</h2>
+<ul><li><b>本機雙擊</b>: 直接用瀏覽器開這個 <code>index.html</code> (免網路免 server)。</li>
+<li><b>用連結</b>: 推上 GitHub 後開 <a href="https://yi-ning-huang.github.io/_se/homework/HW2/docs/">https://yi-ning-huang.github.io/_se/homework/HW2/docs/</a>。</li>
+<li><b>實際操作</b> (登入/選課/退選需跑 server):
+<pre>python homework/HW2/app1/app.py --initdb
+python homework/HW2/app1/app.py --serve 8080
+# 開 http://127.0.0.1:8080/ (同 Wi-Fi 加 --host 0.0.0.0)</pre></li></ul>
+<h2>展示帳號 (密碼皆 1234)</h2>
+<table><tr><th>學號</th><th>姓名(假名)</th><th>密碼</th></tr><tr><td>s001</td><td>金小奕</td><td>1234</td></tr><tr><td>s002</td><td>門小寧</td><td>1234</td></tr><tr><td>s003</td><td>沙小安</td><td>1234</td></tr></table>
+<h2>預設課程 (15 門)</h2>
+<table><tr><th>課號</th><th>科系</th><th>課名</th><th>老師(假名)</th><th>學分</th><th>上限</th><th>時間</th></tr><tr><td>CS101</td><td>資訊工程系</td><td>程式設計(一)</td><td>高志遠</td><td>3</td><td>2</td><td>一34</td></tr><tr><td>CS102</td><td>資訊工程系</td><td>計算機概論</td><td>林曉峰</td><td>3</td><td>30</td><td>二12</td></tr><tr><td>CS201</td><td>資訊工程系</td><td>資料結構</td><td>高志遠</td><td>3</td><td>30</td><td>一34</td></tr><tr><td>CS202</td><td>資訊工程系</td><td>離散數學</td><td>趙文琪</td><td>3</td><td>30</td><td>三34</td></tr><tr><td>CS301</td><td>資訊工程系</td><td>作業系統</td><td>蔡佩君</td><td>3</td><td>30</td><td>五34</td></tr><tr><td>CS302</td><td>資訊工程系</td><td>資料庫系統</td><td>許明哲</td><td>3</td><td>30</td><td>二34</td></tr><tr><td>EE201</td><td>電機工程系</td><td>電路學</td><td>謝宗翰</td><td>3</td><td>35</td><td>一12</td></tr><tr><td>BA201</td><td>企業管理系</td><td>企業管理概論</td><td>韓美玲</td><td>3</td><td>40</td><td>二56</td></tr><tr><td>TM301</td><td>觀光管理系</td><td>觀光行銷學</td><td>羅國華</td><td>3</td><td>40</td><td>三56</td></tr><tr><td>FS201</td><td>食品科學系</td><td>食品化學</td><td>潘淑芬</td><td>3</td><td>35</td><td>四56</td></tr><tr><td>NR201</td><td>護理系</td><td>基本護理學</td><td>蔣心怡</td><td>3</td><td>30</td><td>五12</td></tr><tr><td>HS101</td><td>社會工作系</td><td>社會工作概論</td><td>馮建國</td><td>2</td><td>45</td><td>四12</td></tr><tr><td>GE101</td><td>通識中心</td><td>金門學概論</td><td>鄭雅婷</td><td>2</td><td>50</td><td>三12</td></tr><tr><td>PE101</td><td>體育室</td><td>體育(一)</td><td>黃俊傑</td><td>1</td><td>40</td><td>四34</td></tr><tr><td>EN101</td><td>語文中心</td><td>英文(一)</td><td>劉怡君</td><td>2</td><td>40</td><td>五56</td></tr></table>
+<h2>版一功能 (app1 選課核心)</h2>
+<ul><li>登入/登出</li><li>課程查詢：科系下拉選單 + 關鍵字搜尋</li>
+<li>加選/退選, 擋修: 額滿 / 衝堂 / 學分上限(25) / 重複</li>
+<li>我的課表與學分統計</li></ul>
+<h2>v1.1 新增 (app2)</h2>
+<ul><li>我的成績：分數查詢 + 等第 + 學分加權平均 + GPA (三個帳號都有預設成績，如 s003：平均 84.0 / GPA 2.8)</li></ul>
+<h2>v1.2 新增 (app3)</h2>
+<ul><li>老師 (t001/t002)：我的開課 + 點名登分/改分</li>
+<li>管理員 (admin)：開課管理；導覽列按角色顯示，跨權限擋下</li></ul>
+<h2>版本對照</h2>
+<table><tr><th>版</th><th>資料夾</th><th>內容</th></tr>
+<tr><td>v1.0</td><td>app1/</td><td>選課核心 (主要功能, test.sh 門檻)</td></tr>
+<tr><td>v1.1</td><td>app2/</td><td>app1 + 成績查詢/GPA (test.sh 門檻含回歸)</td></tr>
+<tr><td>v1.2</td><td>app3/</td><td>app2 + 老師登分 + 管理員開課 (test.sh 門檻含回歸)</td></tr>
+<tr><td>展示</td><td>docs/ (本頁)</td><td>靜態展示, 不參與版本門檻</td></tr></table>
+<h2>檢測報告 (app1/test-report.txt)</h2><pre>=== [1] python 版本 (stdlib only, 不需 flask) ===
+Python 3.12.10
+PASS: python 可執行
+sqlite3 ok
+PASS: sqlite3 內建可用
+=== [2] app.py 基本指令 ===
+nqu-school-app1 1.0.0 (python stdlib only)
+PASS: app.py --version
+PASS: app.py --help
+=== [3] 單元測試 (不需開 server, 不需外網) ===
+test_drop (test_school.SchoolTest.test_drop) ... ok
+test_login_fail (test_school.SchoolTest.test_login_fail) ... ok
+test_login_ok (test_school.SchoolTest.test_login_ok) ... ok
+test_search (test_school.SchoolTest.test_search) ... ok
+test_select_conflict (test_school.SchoolTest.test_select_conflict) ... ok
+test_select_credit_limit (test_school.SchoolTest.test_select_credit_limit) ... ok
+test_select_duplicate (test_school.SchoolTest.test_select_duplicate) ... ok
+test_select_full (test_school.SchoolTest.test_select_full) ... ok
+test_select_ok (test_school.SchoolTest.test_select_ok) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.472s
+
+OK
+PASS: unittest 全過
+=== [4] 重建資料庫 + 種子資料 ===
+已重建 C:\Users\EleenH_user\_se\homework\HW2\app1\school.db
+PASS: --initdb 重建成功
+courses: 10
+PASS: 種子課程 &gt;=10 筆
+=== [5] 產生 index.html 展示頁 (老師免跑 server 也能看) ===
+已產生 homework/HW2/app1/index.html
+PASS: index.html 產生成功
+PASS: index.html 內容正確
+=== [6] 實機 smoke: 啟動 server + 查頁面與 API (只用本機 127.0.0.1) ===
+login page ok
+PASS: /login 有登入表單
+api courses: 10
+PASS: /api/courses &gt;=10 筆
+=== [7] 端到端: 登入→加選→課表→衝堂擋→退選 (經 HTTP) ===
+已重建 C:\Users\EleenH_user\_se\homework\HW2\app1\school.db
+e2e ok
+PASS: HTTP 端到端全過 (選課/衝堂/退選)
+------------------------------
+結果: PASS=12 FAIL=0
+ALL CHECKS PASSED
+</pre>
+<h2>原始碼瀏覽</h2>
+<ul><li><a href='school.html'>school.py</a> (核心邏輯)</li>
+<li><a href='app.html'>app.py</a> (網頁層)</li></ul></body></html>
