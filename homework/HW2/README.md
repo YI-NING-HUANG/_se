@@ -15,18 +15,24 @@
 2. 該版 `bash test.sh` 出現 `ALL CHECKS PASSED` 才能凍結、複製開下一版。
 3. 下一版 `test.sh` 必須含上一版的回歸測試（不能把選課核心改壞）。
 
-執行方式（每版相同）：
+執行方式（每版相同，統一入口在 `test/`）：
 ```bash
-bash homework/HW2/app1/test.sh 2>&1 | tee homework/HW2/app1/test-report.txt
+bash homework/HW2/test/test.sh    # v1.0 (app1)
+bash homework/HW2/test/test2.sh   # v1.1 (app2)
+bash homework/HW2/test/test3.sh   # v1.2 (app3)
+bash homework/HW2/test/test-all.sh  # 一次全跑
 ```
 
 ## 版本對照
-| 版 | 資料夾 | 內容 | 狀態 |
-|----|--------|------|------|
-| v1.0 主要功能 | `app1/` | 選課核心：登入、課程查詢/搜尋、加選/退選、擋修（額滿/衝堂/學分上限/重複）、我的課表 | PASS=13 FAIL=0，ALL CHECKS PASSED |
-| v1.1 | `app2/` | = app1 + 我的成績（分數/等第/加權平均/GPA）+ `/api/grades`，含 app1 回歸 | PASS=13 FAIL=0，ALL CHECKS PASSED |
-| v1.2 | `app3/` | = app2 + 老師登分/改分 + 管理員開課，導覽按角色顯示，含回歸 | PASS=13 FAIL=0，ALL CHECKS PASSED |
-| 展示（非版本） | `docs/` | 靜態展示頁：雙擊或 Pages 連結可看；`python docs/build.py` 重建 | 已產生 index.html+school.html+app.html |
+| 版 | 資料夾 | 測試入口 | 測試結果 | 內容 |
+|----|--------|----------|----------|------|
+| v1.0 主要功能 | `app1/` | `test/test.sh` | `test/test-report.txt` | 選課核心：登入、課程查詢/搜尋、加選/退選、擋修（額滿/衝堂/學分上限/重複）、我的課表 | PASS=13 FAIL=0，ALL CHECKS PASSED |
+| v1.1 | `app2/` | `test/test2.sh` | `test/test-report2.txt` | = app1 + 我的成績（分數/等第/加權平均/GPA）+ `/api/grades`，含 app1 回歸 | PASS=13 FAIL=0，ALL CHECKS PASSED |
+| v1.2 | `app3/` | `test/test3.sh` | `test/test-report3.txt` | = app2 + 老師登分/改分 + 管理員開課，導覽按角色顯示，含回歸 | PASS=13 FAIL=0，ALL CHECKS PASSED |
+| 展示（非版本） | `docs/` | — | — | 靜態展示頁：雙擊或 Pages 連結可看；`python docs/build.py` 重建 | 已產生 index.html+school.html+app.html |
+
+> 測試分門別類收在 `test/`：`test.sh`=v1.0、`test2.sh`=v1.1、`test3.sh`=v1.2，
+> `test-all.sh` 一次全跑，詳見 `test/README.md`。
 
 ## app1 快速開始（老師用）
 ```bash
