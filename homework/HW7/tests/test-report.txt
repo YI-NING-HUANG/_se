@@ -1,0 +1,73 @@
+DINO RUN test report
+Fri, Oct 23, 2026  6:49:50 PM
+Python 3.12.10
+v24.21.0
+
+
+===== Unit tests (server core: validation + SQLite) =====
+test_control_characters_become_spaces (tests.unit.test_core.CleanNameUnitTests.test_control_characters_become_spaces) ... ok
+test_length_boundaries (tests.unit.test_core.CleanNameUnitTests.test_length_boundaries) ... ok
+test_non_string_is_rejected (tests.unit.test_core.CleanNameUnitTests.test_non_string_is_rejected) ... ok
+test_only_whitespace_is_rejected (tests.unit.test_core.CleanNameUnitTests.test_only_whitespace_is_rejected) ... ok
+test_trims_and_collapses_spaces (tests.unit.test_core.CleanNameUnitTests.test_trims_and_collapses_spaces) ... ok
+test_unicode_name_is_kept (tests.unit.test_core.CleanNameUnitTests.test_unicode_name_is_kept) ... ok
+test_add_returns_record_and_rank (tests.unit.test_core.LeaderboardUnitTests.test_add_returns_record_and_rank) ... ok
+test_new_database_is_empty (tests.unit.test_core.LeaderboardUnitTests.test_new_database_is_empty) ... ok
+test_persistence_across_instances (tests.unit.test_core.LeaderboardUnitTests.test_persistence_across_instances) ... ok
+test_rank_index_exists (tests.unit.test_core.LeaderboardUnitTests.test_rank_index_exists) ... ok
+test_rank_uses_score_and_insert_order (tests.unit.test_core.LeaderboardUnitTests.test_rank_uses_score_and_insert_order) ... ok
+test_stats_aggregates_scores (tests.unit.test_core.LeaderboardUnitTests.test_stats_aggregates_scores) ... ok
+test_top_orders_by_score_then_id (tests.unit.test_core.LeaderboardUnitTests.test_top_orders_by_score_then_id) ... ok
+test_top_respects_limit (tests.unit.test_core.LeaderboardUnitTests.test_top_respects_limit) ... ok
+test_unicode_name_round_trip (tests.unit.test_core.LeaderboardUnitTests.test_unicode_name_round_trip) ... ok
+test_out_of_range_is_rejected (tests.unit.test_core.ValidScoreUnitTests.test_out_of_range_is_rejected) ... ok
+test_valid_boundaries (tests.unit.test_core.ValidScoreUnitTests.test_valid_boundaries) ... ok
+test_wrong_types_are_rejected (tests.unit.test_core.ValidScoreUnitTests.test_wrong_types_are_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.643s
+
+OK
+
+===== System tests (HTTP server + Web API) =====
+test_cache_headers_and_nosniff (tests.system.test_api.DinoAppTests.test_cache_headers_and_nosniff) ... ok
+test_favicon_is_served (tests.system.test_api.DinoAppTests.test_favicon_is_served) ... ok
+test_frontend_contains_required_features (tests.system.test_api.DinoAppTests.test_frontend_contains_required_features) ... ok
+test_head_request (tests.system.test_api.DinoAppTests.test_head_request) ... ok
+test_health (tests.system.test_api.DinoAppTests.test_health) ... ok
+test_index_page (tests.system.test_api.DinoAppTests.test_index_page) ... ok
+test_invalid_json_and_body (tests.system.test_api.DinoAppTests.test_invalid_json_and_body) ... ok
+test_invalid_scores_are_rejected (tests.system.test_api.DinoAppTests.test_invalid_scores_are_rejected) ... ok
+test_limit_is_clamped (tests.system.test_api.DinoAppTests.test_limit_is_clamped) ... ok
+test_name_is_sanitized (tests.system.test_api.DinoAppTests.test_name_is_sanitized) ... ok
+test_path_traversal_is_blocked (tests.system.test_api.DinoAppTests.test_path_traversal_is_blocked) ... ok
+test_post_score_and_ranking (tests.system.test_api.DinoAppTests.test_post_score_and_ranking) ... ok
+test_scores_start_empty (tests.system.test_api.DinoAppTests.test_scores_start_empty) ... ok
+test_service_worker_has_cache_shell (tests.system.test_api.DinoAppTests.test_service_worker_has_cache_shell) ... ok
+test_static_assets (tests.system.test_api.DinoAppTests.test_static_assets) ... ok
+test_stats_endpoint (tests.system.test_api.DinoAppTests.test_stats_endpoint) ... ok
+test_tied_scores_keep_insert_order (tests.system.test_api.DinoAppTests.test_tied_scores_keep_insert_order) ... ok
+test_unknown_paths (tests.system.test_api.DinoAppTests.test_unknown_paths) ... ok
+test_unknown_post_route (tests.system.test_api.DinoAppTests.test_unknown_post_route) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 1.896s
+
+OK
+
+===== JavaScript syntax =====
+JS syntax OK
+
+===== E2E tests (Playwright + headless Chrome) =====
+
+Running 6 tests using 1 worker
+
+  ✓  1 game.spec.js:18:3 › DINO RUN 網站 › 首頁載入、排行榜連線、無 JS 錯誤 (1.5s)
+  ✓  2 game.spec.js:37:3 › DINO RUN 網站 › 鍵盤控制：開始、跳躍、蹲下、暫停與繼續 (2.5s)
+  ✓  3 game.spec.js:67:3 › DINO RUN 網站 › 遊戲結束後可送出分數並更新排行榜 (6.3s)
+  ✓  4 game.spec.js:94:3 › DINO RUN 網站 › 排行榜會顯示 SQLite 中的既有資料 (1.0s)
+  ✓  5 game.spec.js:106:3 › DINO RUN 網站 › Service Worker 離線後仍可載入並開始遊戲 (1.4s)
+  ✓  6 game.spec.js:149:3 › 手機版 › 觸控按鈕可開始遊戲並跳躍 (1.3s)
+
+  6 passed (16.7s)
+ALL CHECKS PASSED

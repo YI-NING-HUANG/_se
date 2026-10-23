@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>DINO RUN — 離線小恐龍</title>
+  <meta name="description" content="Chrome 經典小恐龍遊戲，支援離線遊玩與 SQLite 線上排行榜。">
+  <meta name="theme-color" content="#f7f7f2">
+  <meta name="color-scheme" content="light">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon.svg">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">▲</span>
+        <div>
+          <h1>DINO RUN</h1>
+          <p>離線小恐龍 · Chrome 經典玩法</p>
+        </div>
+      </div>
+      <div class="status">
+        <span id="netBadge" class="badge badge-wait" role="status">連線中…</span>
+        <button id="soundBtn" class="btn btn-ghost" type="button" aria-pressed="true">音效：開</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="game-card" aria-label="遊戲區">
+        <div class="game-frame">
+          <canvas id="game" width="1200" height="400" aria-label="小恐龍跑酷遊戲，按空白鍵跳躍">
+            你的瀏覽器不支援 Canvas，請改用較新的瀏覽器。
+          </canvas>
+
+          <div id="overlay" class="overlay">
+            <div class="overlay-panel">
+              <p id="overlayEyebrow" class="eyebrow">READY?</p>
+              <h2 id="overlayTitle">按空白鍵開始</h2>
+              <p id="overlayText" class="overlay-text">跳過仙人掌、躲開翼龍，看看你能跑多遠。</p>
+
+              <div id="nameRow" class="name-row hidden">
+                <label for="nameInput">留名排行榜</label>
+                <div class="name-input-group">
+                  <input id="nameInput" type="text" maxlength="16" placeholder="你的名字" autocomplete="nickname">
+                  <button id="saveBtn" class="btn btn-primary" type="button">送出分數</button>
+                </div>
+                <p id="saveMsg" class="save-msg" role="status"></p>
+              </div>
+
+              <button id="startBtn" class="btn btn-primary btn-start" type="button">開始遊戲</button>
+              <p class="keys">SPACE / ↑ 跳躍 · ↓ 蹲下 · P 暫停</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="scoreboard">
+            <span>本局 <b id="scoreDisplay">0</b></span>
+            <span>最高 <b id="bestDisplay">0</b></span>
+          </div>
+          <div class="actions">
+            <button id="pauseBtn" class="btn btn-ghost" type="button">暫停</button>
+            <button id="restartBtn" class="btn btn-ghost" type="button">重來</button>
+          </div>
+        </div>
+
+        <div class="touch-controls" aria-label="觸控操作">
+          <button id="jumpBtn" class="btn touch-btn" type="button">JUMP</button>
+          <button id="duckBtn" class="btn touch-btn" type="button">DUCK</button>
+        </div>
+      </section>
+
+      <aside class="leaderboard" aria-label="排行榜">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">TOP 10</p>
+            <h2>排行榜</h2>
+          </div>
+          <button id="refreshBtn" class="btn btn-ghost" type="button">重新整理</button>
+        </div>
+        <p id="lbStatus" class="lb-status" role="status">載入中…</p>
+        <ol id="lbList" class="lb-list"></ol>
+        <div id="lbStats" class="lb-stats"></div>
+        <p class="hint">分數存進 SQLite。離線時仍可遊玩，分數只保留在本機。</p>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <span>Python 標準庫 + SQLite + Service Worker</span>
+      <span>玩法靈感來自 Chrome Dino</span>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="./game.js"></script>
+</body>
+</html>

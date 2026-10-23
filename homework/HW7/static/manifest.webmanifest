@@ -1,0 +1,26 @@
+{
+  "name": "DINO RUN — 離線小恐龍",
+  "short_name": "DINO RUN",
+  "description": "Chrome 經典小恐龍遊戲，支援離線遊玩與 SQLite 線上排行榜。",
+  "lang": "zh-Hant",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#f7f7f2",
+  "theme_color": "#f7f7f2",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
