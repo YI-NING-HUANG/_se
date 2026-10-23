@@ -33,6 +33,67 @@ DINO RUN 是一個可以直接在瀏覽器遊玩的無限跑酷網站應用。�
 9. **手機支援**：響應式版面、點擊畫面跳躍，另有 JUMP／DUCK 觸控按鈕。
 10. **輸入與檔案安全**：限制 request body 大小、驗證名字與分數、使用參數化 SQL、阻擋靜態檔案路徑穿越。
 
+### 給第一次從 GitHub 看到的人：如何在電腦上啟動？
+
+這不是純靜態網站；排行榜需要 Python 後端，因此請用下面的方式啟動，而不是只打開 `static/index.html`。這個專案**不需要安裝資料庫，也不需要 `pip install` 或 `npm install` 才能遊玩**，只要電腦有 Python 與現代瀏覽器即可。
+
+#### 需要具備什麼？
+
+| 項目 | 需求 | 說明 |
+|---|---|---|
+| Python | 3.10 或更新版本 | 執行後端與靜態檔案伺服器；安裝時建議勾選「Add Python to PATH」 |
+| 瀏覽器 | Chrome／Edge／Firefox／Safari 等現代瀏覽器 | 執行 Canvas 遊戲與 Service Worker |
+| Git | 選用 | 用來 `git clone`；沒有 Git 也可以從 GitHub 下載 ZIP |
+| Node.js | 選用，18 以上 | 只有要執行 Playwright E2E 測試才需要，玩遊戲不用 |
+
+#### 啟動步驟
+
+1. **取得專案**：在終端機（Windows PowerShell／命令提示字元，或 macOS／Linux 的 Terminal）執行：
+
+   ```bash
+   git clone https://github.com/YI-NING-HUANG/_se.git
+   cd _se/homework/HW7
+   ```
+
+   如果沒有安裝 Git，也可以在 GitHub 頁面按「Code」→「Download ZIP」，解壓縮後在 `homework/HW7` 資料夾開啟終端機。
+
+2. **確認 Python 已安裝**：
+
+   ```bash
+   python --version
+   ```
+
+   Windows 若找不到 `python`，可以改用：
+
+   ```bash
+   py --version
+   ```
+
+3. **啟動網站應用**：
+
+   ```bash
+   python app.py
+   ```
+
+   Windows 也可以使用：
+
+   ```bash
+   py app.py
+   ```
+
+4. **開啟瀏覽器**：看到終端機顯示伺服器啟動後，打開：
+
+   <http://127.0.0.1:8787/>
+
+5. **停止伺服器**：回到終端機按 `Ctrl + C`。
+
+補充說明：
+
+- 第一次啟動時會自動建立 `data/scores.db`，不需要手動建表。
+- 若 `8787` 連接埠已被占用，可以改用其他埠，例如 `python app.py --port 8788`，並開啟 <http://127.0.0.1:8788/>。
+- 若出現 `python` 不是內部或外部命令，代表 Python 沒有加入 PATH；請重新安裝 Python 並勾選「Add Python to PATH」，或改用 `py`。
+- 直接雙擊 `static/index.html` 雖然可以玩遊戲，但沒有排行榜，Service Worker 也可能無法運作；建議使用 `python app.py`。
+
 ### 二、操作方式
 
 | 操作 | 按鍵／方式 |
