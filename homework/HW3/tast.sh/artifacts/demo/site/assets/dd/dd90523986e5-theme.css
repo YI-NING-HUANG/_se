@@ -1,0 +1,18 @@
+@charset "UTF-8";
+@import url("../88/88fb786f9e51-site.css");
+body {
+  margin: 0;
+  padding: 24px;
+  color: #2a2d33;
+  background: #f2eee6 url("../cc/ccbcedbb7b5b-paper.svg");
+  font-family: "Noto Serif TC", "PMingLiU", serif;
+}
+.site-header { display: flex; gap: 16px; align-items: center; border-bottom: 3px double #9c7b52; }
+h1 { color: #6f4e2e; }
+a { color: #2f5d78; }
+.post { border: 1px solid #d8cbb8; background: #fffdf8; padding: 12px; margin: 16px 0; }
+.post-meta { color: #8d7a63; font-size: 13px; margin-bottom: 8px; }
+.pagination { margin: 24px 0; }
+.pagination a { margin-right: 12px; }
+table { border-collapse: collapse; width: 100%; background: #fffdf8; }
+th, td { border: 1px solid #d8cbb8; padding: 8px; text-align: left; }

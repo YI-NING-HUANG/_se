@@ -1,0 +1,32 @@
+:root{color-scheme:light;--ink:#22252a;--muted:#6c7280;--line:#dfe3e8;--soft:#f6f7f9;--accent:#28666e;--accent-soft:#e7f1f2}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",sans-serif}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+header.site{background:var(--soft);border-bottom:1px solid var(--line);padding:1.2rem 1.5rem}
+header.site .wrap{max-width:1120px;margin:0 auto}
+header.site h1{margin:0;font-size:1.45rem}
+header.site p{margin:.3rem 0 0;color:var(--muted)}
+main{max-width:1120px;margin:0 auto;padding:1.5rem}
+nav.site{display:flex;flex-wrap:wrap;gap:.5rem 1.1rem;margin-top:.8rem}
+nav.site a{font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.8rem;margin:1.2rem 0}
+.card{border:1px solid var(--line);border-radius:10px;padding:1rem;background:#fff}
+.card .num{font-size:1.7rem;font-weight:700;color:var(--accent)}
+.card .label{color:var(--muted);font-size:.9rem}
+table{width:100%;border-collapse:collapse;font-size:.94rem}
+th,td{border-bottom:1px solid var(--line);padding:.5rem .55rem;text-align:left;vertical-align:top}
+th{background:var(--soft)}
+tr:hover td{background:#fafbfc}
+.meta{color:var(--muted);font-size:.88rem}
+.notice{border-left:4px solid var(--accent);background:var(--accent-soft);padding:.8rem 1rem;margin:1rem 0}
+.pager{display:flex;gap:1rem;justify-content:center;margin:1.5rem 0;flex-wrap:wrap}
+.thumb{width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--line);background:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.8rem}
+.asset{border:1px solid var(--line);border-radius:8px;padding:.6rem;min-width:0}
+.asset img{width:100%;height:150px;object-fit:contain;background:var(--soft);border-radius:5px}
+.asset .name{font-size:.85rem;overflow-wrap:anywhere}
+input[type=search]{width:100%;padding:.75rem 1rem;border:1px solid var(--line);border-radius:8px;font:inherit}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--soft);padding:1rem;border-radius:8px}
+footer.site{max-width:1120px;margin:2rem auto 0;padding:1.2rem 1.5rem 2rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line)}
+@media(max-width:640px){main{padding:1rem}header.site{padding:1rem}th,td{padding:.4rem}}

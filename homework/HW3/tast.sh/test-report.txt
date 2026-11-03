@@ -1,0 +1,95 @@
+ForumKeep 測試
+日期: 2026-11-03T17:24:56Z
+Python: Python 3.12.10
+專案: /c/Users/EleenH_user/_se/homework/HW3
+
+=== [1] Python 與編譯 ===
+Python 3.12.10
+PASS: Python 可執行
+PASS: forumkeep/tests 編譯通過
+
+=== [2] 單元測試 ===
+test_download_and_offline_build (test_build.BuildTests.test_download_and_offline_build) ... ok
+test_hash_failure_and_fix (test_build.BuildTests.test_hash_failure_and_fix) ... ok
+test_page_hash_failure_and_fix (test_build.BuildTests.test_page_hash_failure_and_fix) ... ok
+test_crawl_discovers_pages_links_and_assets (test_crawl.CrawlTests.test_crawl_discovers_pages_links_and_assets) ... ok
+test_force_requeues_pages (test_crawl.CrawlTests.test_force_requeues_pages) ... ok
+test_resume_with_max_pages (test_crawl.CrawlTests.test_resume_with_max_pages) ... ok
+test_second_run_is_idempotent (test_crawl.CrawlTests.test_second_run_is_idempotent) ... ok
+test_css_urls (test_htmlx.HtmlTests.test_css_urls) ... ok
+test_extracts_links_resources_and_text (test_htmlx.HtmlTests.test_extracts_links_resources_and_text) ... ok
+test_srcset_parser (test_htmlx.HtmlTests.test_srcset_parser) ... ok
+test_download_to_file (test_net.HttpClientTests.test_download_to_file) ... ok
+test_gzip_and_redirect (test_net.HttpClientTests.test_gzip_and_redirect) ... ok
+test_robots_blocks_before_request (test_net.HttpClientTests.test_robots_blocks_before_request) ... ok
+test_too_large (test_net.HttpClientTests.test_too_large) ... ok
+test_parser_and_wildcards (test_net.RobotsTests.test_parser_and_wildcards) ... ok
+test_wildcard_group (test_net.RobotsTests.test_wildcard_group) ... ok
+test_assets_and_external (test_policy.PolicyTests.test_assets_and_external) ... ok
+test_classify_page (test_policy.PolicyTests.test_classify_page) ... ok
+test_default_excludes (test_policy.PolicyTests.test_default_excludes) ... ok
+test_page_candidates (test_policy.PolicyTests.test_page_candidates) ... ok
+test_path_prefix_and_include_exclude (test_policy.PolicyTests.test_path_prefix_and_include_exclude) ... ok
+test_assets_and_counts (test_store.StoreTests.test_assets_and_counts) ... ok
+test_export (test_store.StoreTests.test_export) ... ok
+test_mark_page_bad_requeues (test_store.StoreTests.test_mark_page_bad_requeues) ... ok
+test_queue_and_page (test_store.StoreTests.test_queue_and_page) ... ok
+test_reopen_recovers_working_queue (test_store.StoreTests.test_reopen_recovers_working_queue) ... ok
+test_content_disposition (test_util.UtilTests.test_content_disposition) ... ok
+test_decode_big5_meta (test_util.UtilTests.test_decode_big5_meta) ... ok
+test_filename_from_attachment_url (test_util.UtilTests.test_filename_from_attachment_url) ... ok
+test_human_size (test_util.UtilTests.test_human_size) ... ok
+test_kind_and_mime_helpers (test_util.UtilTests.test_kind_and_mime_helpers) ... ok
+test_normalize_url_keeps_meaningful_query (test_util.UtilTests.test_normalize_url_keeps_meaningful_query) ... ok
+test_normalize_url_rejects_non_http (test_util.UtilTests.test_normalize_url_rejects_non_http) ... ok
+test_normalize_url_strips_tracking_and_fragment (test_util.UtilTests.test_normalize_url_strips_tracking_and_fragment) ... ok
+test_safe_filename_windows_reserved (test_util.UtilTests.test_safe_filename_windows_reserved) ... ok
+test_sha256 (test_util.UtilTests.test_sha256) ... ok
+
+----------------------------------------------------------------------
+Ran 36 tests in 10.912s
+
+OK
+PASS: 單元測試全過（Ran 36 tests）
+
+=== [3] CLI 基本檢查 ===
+ForumKeep 0.1.0
+PASS: python -m forumkeep --version
+PASS: python -m forumkeep --help
+
+=== [4] 端到端：本機範例論壇 ===
+PASS: 測試伺服器啟動（127.0.0.1:55679）
+crawled 10 pages (9.3/s), 14 assets found, 0 errors
+blocked by robots: http://127.0.0.1:55679/private/secret.html
+crawl 完成：12 頁、15 個新素材、0 個錯誤、1 個被 robots 阻擋
+[1] attachment: http://127.0.0.1:55679/downloads/tiles.zip
+download 完成：16 個成功、0 個失敗、0 個略過、4.7 KB
+built 12 pages and 16 files into C:\Users\EleenH_user\_se\homework\HW3\tast.sh\artifacts\demo\site
+完成。開啟 C:\Users\EleenH_user\_se\homework\HW3\tast.sh\artifacts\demo\site\index.html
+PASS: forumkeep run（crawl + download + build）
+封存：C:\Users\EleenH_user\_se\homework\HW3\tast.sh\artifacts\demo
+來源：
+  - http://127.0.0.1:55679/
+數量：
+  頁面        12
+  素材        16（4.7 KB）
+  連結        54
+  佇列 done     12
+  佇列 blocked  1
+最近錯誤/阻擋：
+  [queue] http://127.0.0.1:55679/private/secret.html
+      robots.txt disallows http://127.0.0.1:55679/private/secret.html
+PASS: forumkeep status
+all checks passed: 12 pages, 16 assets
+驗證：12 頁、16 個素材；頁面問題 0、素材問題 0
+PASS: forumkeep verify（雜湊與檔案檢查）
+頁面=12 素材=16 private_pages=0
+離線首頁: C:\Users\EleenH_user\_se\homework\HW3\tast.sh\artifacts\demo\site\index.html
+封存首頁: C:\Users\EleenH_user\_se\homework\HW3\tast.sh\artifacts\demo\site\pages\127.0.0.1\851842047780.html
+PASS: 離線站內容與封存完整性
+
+----------------------------------------
+結果: PASS=10 FAIL=0
+ALL CHECKS PASSED
+測試報告: /c/Users/EleenH_user/_se/homework/HW3/tast.sh/test-report.txt
+展示站台: /c/Users/EleenH_user/_se/homework/HW3/tast.sh/artifacts/demo/site/index.html

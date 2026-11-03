@@ -1,0 +1,289 @@
+{
+  "generator": "ForumKeep 0.1.0",
+  "generated_at": "2026-11-03T17:25:16+00:00",
+  "seeds": [
+    "http://127.0.0.1:55679/"
+  ],
+  "counts": {
+    "pages": 12,
+    "assets": 16,
+    "links": 54,
+    "aliases": 0,
+    "queue_blocked": 1,
+    "queue_done": 12,
+    "asset_bytes": 4799,
+    "page_bytes": 9898
+  },
+  "pages": [
+    {
+      "url": "http://127.0.0.1:55679/",
+      "final_url": "http://127.0.0.1:55679/",
+      "title": "舊論壇示例",
+      "kind": "index",
+      "local_path": "pages/127.0.0.1/851842047780.html",
+      "sha256": "aea36d52d67e327e71c221cdcd881588f9281b62250964690f52763f674f7dd9",
+      "size": 1302
+    },
+    {
+      "url": "http://127.0.0.1:55679/forum-1.html",
+      "final_url": "http://127.0.0.1:55679/forum-1.html",
+      "title": "懷舊素材與工具",
+      "kind": "forum",
+      "local_path": "pages/127.0.0.1/32a6883ecd6d.html",
+      "sha256": "78a90067d4e9a4e840b5f4128b342572db66f6cadf255132282b4fa72791eb0e",
+      "size": 901
+    },
+    {
+      "url": "http://127.0.0.1:55679/forum-2.html",
+      "final_url": "http://127.0.0.1:55679/forum-2.html",
+      "title": "站務公告",
+      "kind": "forum",
+      "local_path": "pages/127.0.0.1/797809b05660.html",
+      "sha256": "72801a0e0393190c2e86942e1fc7588293691fd9aa7c38b1fa43ae85c47c3950",
+      "size": 351
+    },
+    {
+      "url": "http://127.0.0.1:55679/threads/tools.html",
+      "final_url": "http://127.0.0.1:55679/threads/tools.html",
+      "title": "自製小工具與附件整理",
+      "kind": "thread",
+      "local_path": "pages/127.0.0.1/9c408190d246.html",
+      "sha256": "52f94353e2427ae8b93d8444fb845caaac1c2627a2b961c5afbb9d806b4e75ff",
+      "size": 785
+    },
+    {
+      "url": "http://127.0.0.1:55679/threads/old-theme.html",
+      "final_url": "http://127.0.0.1:55679/threads/old-theme.html",
+      "title": "舊版佈景主題修復紀錄",
+      "kind": "thread",
+      "local_path": "pages/127.0.0.1/3e7b9b15b31f.html",
+      "sha256": "623a97a37acc358ae819c1d70e3120137bc0b01686ecce1148221571908ef36e",
+      "size": 1203
+    },
+    {
+      "url": "http://127.0.0.1:55679/forum-1-page2.html",
+      "final_url": "http://127.0.0.1:55679/forum-1-page2.html",
+      "title": "懷舊素材與工具 · 第 2 頁",
+      "kind": "forum",
+      "local_path": "pages/127.0.0.1/054e3b63a412.html",
+      "sha256": "aaeb7e6b4cde6a70f8f134282d4cc757c48b9c9541ddcf4cdf3e2f2b413802c4",
+      "size": 586
+    },
+    {
+      "url": "http://127.0.0.1:55679/threads/fonts.html",
+      "final_url": "http://127.0.0.1:55679/threads/fonts.html",
+      "title": "方塊字型替代方案",
+      "kind": "thread",
+      "local_path": "pages/127.0.0.1/4ad175743fd9.html",
+      "sha256": "c878da47051c20ea4798553890b7320b9d72ba5cdcad941e67ebf05c5835d4d8",
+      "size": 652
+    },
+    {
+      "url": "http://127.0.0.1:55679/threads/readonly.html",
+      "final_url": "http://127.0.0.1:55679/threads/readonly.html",
+      "title": "本站即日起轉為唯讀",
+      "kind": "thread",
+      "local_path": "pages/127.0.0.1/237845d84172.html",
+      "sha256": "a954399c0549a8046d21c52a7db866421af2ece4e6475ca5dcd0e0ac628299eb",
+      "size": 647
+    },
+    {
+      "url": "http://127.0.0.1:55679/threads/maps.html",
+      "final_url": "http://127.0.0.1:55679/threads/maps.html",
+      "title": "老地圖素材打包",
+      "kind": "thread",
+      "local_path": "pages/127.0.0.1/21179dee6f89.html",
+      "sha256": "43e19bb54ebe75eef464f0438d4451eb15a283847ef21c167748d79f1f48cdf1",
+      "size": 648
+    },
+    {
+      "url": "http://127.0.0.1:55679/threads/old-theme-2.html",
+      "final_url": "http://127.0.0.1:55679/threads/old-theme-2.html",
+      "title": "舊版佈景主題修復紀錄 · 第 2 頁",
+      "kind": "thread",
+      "local_path": "pages/127.0.0.1/a42771e9d3b7.html",
+      "sha256": "a47bb86dd9984e63c86640b3416e8c0535bbad40d0856bfd20ad53ba65a9f715",
+      "size": 866
+    },
+    {
+      "url": "http://127.0.0.1:55679/index.html",
+      "final_url": "http://127.0.0.1:55679/index.html",
+      "title": "舊論壇示例",
+      "kind": "page",
+      "local_path": "pages/127.0.0.1/ff9d1d770183.html",
+      "sha256": "aea36d52d67e327e71c221cdcd881588f9281b62250964690f52763f674f7dd9",
+      "size": 1302
+    },
+    {
+      "url": "http://127.0.0.1:55679/threads/archival-notes.html",
+      "final_url": "http://127.0.0.1:55679/threads/archival-notes.html",
+      "title": "保存舊討論串的注意事項",
+      "kind": "thread",
+      "local_path": "pages/127.0.0.1/793f460de40e.html",
+      "sha256": "5d95646c3b871dbab1c50946268f0dd28e46f56a68dff428e04446dbb368e214",
+      "size": 655
+    }
+  ],
+  "assets": [
+    {
+      "url": "http://127.0.0.1:55679/downloads/theme-pack.zip",
+      "final_url": "http://127.0.0.1:55679/downloads/theme-pack.zip",
+      "kind": "attachment",
+      "status": "done",
+      "local_path": "assets/45/45e9e7bdb22a-theme-pack.zip",
+      "sha256": "45e9e7bdb22ad9532d8d4e18ed1079151c0c1036954579c406a345476c20852a",
+      "size": 287,
+      "filename": "theme-pack.zip"
+    },
+    {
+      "url": "http://127.0.0.1:55679/downloads/tiles.zip",
+      "final_url": "http://127.0.0.1:55679/downloads/tiles.zip",
+      "kind": "attachment",
+      "status": "done",
+      "local_path": "assets/ad/adff48e654ab-tiles.zip",
+      "sha256": "adff48e654ab71c658730fc9055b758da142eaefa192ca75e3b368511d49d81a",
+      "size": 427,
+      "filename": "tiles.zip"
+    },
+    {
+      "url": "http://127.0.0.1:55679/downloads/tools.zip",
+      "final_url": "http://127.0.0.1:55679/downloads/tools.zip",
+      "kind": "attachment",
+      "status": "done",
+      "local_path": "assets/8e/8e2a92595f15-tools.zip",
+      "sha256": "8e2a92595f1554c54d610f5084d3a450d0279d56acbd86833606ec231dcaec60",
+      "size": 288,
+      "filename": "tools.zip"
+    },
+    {
+      "url": "http://127.0.0.1:55679/downloads/readme.txt",
+      "final_url": "http://127.0.0.1:55679/downloads/readme.txt",
+      "kind": "attachment",
+      "status": "done",
+      "local_path": "assets/43/4333a27b4b19-readme.txt",
+      "sha256": "4333a27b4b19279dd10ab6b56de9b63bf6ba237cb8388f1541f3dee48d0b8425",
+      "size": 155,
+      "filename": "readme.txt"
+    },
+    {
+      "url": "http://127.0.0.1:55679/files/font-notes.txt",
+      "final_url": "http://127.0.0.1:55679/files/font-notes.txt",
+      "kind": "document",
+      "status": "done",
+      "local_path": "assets/f5/f5f4b9dd7199-font-notes.txt",
+      "sha256": "f5f4b9dd71997f981686289f14073166bb694590eac07c703f8d21366266f940",
+      "size": 138,
+      "filename": "font-notes.txt"
+    },
+    {
+      "url": "http://127.0.0.1:55679/files/preservation.txt",
+      "final_url": "http://127.0.0.1:55679/files/preservation.txt",
+      "kind": "document",
+      "status": "done",
+      "local_path": "assets/39/3923d6bbfe40-preservation.txt",
+      "sha256": "3923d6bbfe401c894464a5e9806a3c69bb9449d349da71253964a466636fc5f1",
+      "size": 221,
+      "filename": "preservation.txt"
+    },
+    {
+      "url": "http://127.0.0.1:55679/files/theme-notes.txt",
+      "final_url": "http://127.0.0.1:55679/files/theme-notes.txt",
+      "kind": "document",
+      "status": "done",
+      "local_path": "assets/98/98d07205c770-theme-notes.txt",
+      "sha256": "98d07205c770251600df9e49c3676ed461053b087bdf67ecbb846f911f06d7f6",
+      "size": 159,
+      "filename": "theme-notes.txt"
+    },
+    {
+      "url": "http://127.0.0.1:55679/files/tool-notes.txt",
+      "final_url": "http://127.0.0.1:55679/files/tool-notes.txt",
+      "kind": "document",
+      "status": "done",
+      "local_path": "assets/f7/f7552fedb8d0-tool-notes.txt",
+      "sha256": "f7552fedb8d0b2c8908d7a149aeca3eb91c0d394fc67d4b0983b13b4eb709a9c",
+      "size": 126,
+      "filename": "tool-notes.txt"
+    },
+    {
+      "url": "http://127.0.0.1:55679/media/font-sample.svg",
+      "final_url": "http://127.0.0.1:55679/media/font-sample.svg",
+      "kind": "image",
+      "status": "done",
+      "local_path": "assets/23/23f0eac50f5d-font-sample.svg",
+      "sha256": "23f0eac50f5d7c6b9abaf54e333cc760318c891325f13319477199a8b4b26049",
+      "size": 421,
+      "filename": "font-sample.svg"
+    },
+    {
+      "url": "http://127.0.0.1:55679/media/logo.svg",
+      "final_url": "http://127.0.0.1:55679/media/logo.svg",
+      "kind": "image",
+      "status": "done",
+      "local_path": "assets/1d/1d4f621e72ac-logo.svg",
+      "sha256": "1d4f621e72ac2e572f0dc3e44e181f9dda672f94d8a682b4b7073d3874f27054",
+      "size": 317,
+      "filename": "logo.svg"
+    },
+    {
+      "url": "http://127.0.0.1:55679/media/map.svg",
+      "final_url": "http://127.0.0.1:55679/media/map.svg",
+      "kind": "image",
+      "status": "done",
+      "local_path": "assets/d6/d6aeb61adb49-map.svg",
+      "sha256": "d6aeb61adb49aaffc29a469b194cc38526b83338ed2f1061a9e61d1f05efc7d4",
+      "size": 523,
+      "filename": "map.svg"
+    },
+    {
+      "url": "http://127.0.0.1:55679/media/paper.svg",
+      "final_url": "http://127.0.0.1:55679/media/paper.svg",
+      "kind": "image",
+      "status": "done",
+      "local_path": "assets/cc/ccbcedbb7b5b-paper.svg",
+      "sha256": "ccbcedbb7b5b9319b8c1a92c58a742a376d606ba391b777ea2d1a9b9400dcec2",
+      "size": 349,
+      "filename": "paper.svg"
+    },
+    {
+      "url": "http://127.0.0.1:55679/media/theme.svg",
+      "final_url": "http://127.0.0.1:55679/media/theme.svg",
+      "kind": "image",
+      "status": "done",
+      "local_path": "assets/38/38998cd2dae2-theme.svg",
+      "sha256": "38998cd2dae24187181d6fcb079307ab218bc48abee5d48a8cdbc47f8589f4a9",
+      "size": 533,
+      "filename": "theme.svg"
+    },
+    {
+      "url": "http://127.0.0.1:55679/files/old-theme.css",
+      "final_url": "http://127.0.0.1:55679/files/old-theme.css",
+      "kind": "stylesheet",
+      "status": "done",
+      "local_path": "assets/e2/e2c7eb3f5357-old-theme.css",
+      "sha256": "e2c7eb3f5357caeda7484fbd1bf216d5976df00b1ea55988e0bd159a653c2fa1",
+      "size": 68,
+      "filename": "old-theme.css"
+    },
+    {
+      "url": "http://127.0.0.1:55679/media/site.css",
+      "final_url": "http://127.0.0.1:55679/media/site.css",
+      "kind": "stylesheet",
+      "status": "done",
+      "local_path": "assets/88/88fb786f9e51-site.css",
+      "sha256": "88fb786f9e5191fa833bc128280411968ff0136be5a4147fe74a23449e163b66",
+      "size": 72,
+      "filename": "site.css"
+    },
+    {
+      "url": "http://127.0.0.1:55679/theme.css",
+      "final_url": "http://127.0.0.1:55679/theme.css",
+      "kind": "stylesheet",
+      "status": "done",
+      "local_path": "assets/dd/dd90523986e5-theme.css",
+      "sha256": "dd90523986e5dd178205fd96aba9b86de6fd69690257a44d66f86eed8a9ddb67",
+      "size": 715,
+      "filename": "theme.css"
+    }
+  ]
+}

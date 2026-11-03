@@ -1,0 +1,35 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>搜尋 · ForumKeep</title><link rel="stylesheet" href="style.css"></head>
+<body><header class="site"><div class="wrap"><h1>搜尋封存</h1>
+<p>共 12 頁。搜尋標題與頁面文字。</p>
+<nav class="site"><a href="index.html">封存首頁</a><a href="threads.html">討論串</a>
+<a href="forums.html">版面</a><a href="pages.html">其他頁面</a>
+<a href="assets.html">素材庫</a></nav></div></header>
+<main><input id="q" type="search" placeholder="輸入關鍵字，例如：插件、素材、教學……" autofocus>
+<p class="meta" id="count"></p><div id="results"></div>
+<script src="search-index.js"></script>
+<script>
+(function(){
+  var input=document.getElementById("q"), count=document.getElementById("count"),
+      results=document.getElementById("results"), data=window.FORUMKEEP_SEARCH||[], timer=null;
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+  });}
+  function run(){
+    var q=input.value.trim().toLowerCase();
+    if(!q){count.textContent="";results.innerHTML="";return;}
+    var hits=[];
+    for(var i=0;i<data.length&&hits.length<200;i++){
+      var item=data[i], hay=(item.t+" "+item.s).toLowerCase();
+      if(hay.indexOf(q)>=0) hits.push(item);
+    }
+    count.textContent="找到 "+hits.length+(hits.length>=200?"+":"")+" 筆";
+    results.innerHTML="<table><thead><tr><th>頁面</th><th>類型</th></tr></thead><tbody>"+hits.map(function(item){
+      return '<tr><td><a href="'+esc(item.u)+'">'+esc(item.t)+'</a><div class="meta">'+esc(item.o)+'</div></td><td>'+esc(item.k)+'</td></tr>';
+    }).join("")+"</tbody></table>";
+  }
+  input.addEventListener("input",function(){clearTimeout(timer);timer=setTimeout(run,120);});
+})();
+</script></main>
+<footer class="site">ForumKeep v0.1.0</footer></body></html>
