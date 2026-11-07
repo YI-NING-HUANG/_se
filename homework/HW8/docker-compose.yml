@@ -1,0 +1,8 @@
+services:
+  xfrescue:
+    build: .
+    image: xfrescue:local
+    volumes:
+      - ./archive:/data
+    working_dir: /data
+    entrypoint: ["python", "-m", "xfrescue"]
