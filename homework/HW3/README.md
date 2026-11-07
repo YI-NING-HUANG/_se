@@ -355,3 +355,82 @@ HW3/
 ## 授權
 
 MIT，詳見 `LICENSE`。
+
+## 附錄：實際場域測試（RPG Maker Web 論壇）
+
+> 測試對象是一個**準備關站、已進入唯讀的公開論壇**，不是本專案的本機範例站。
+> 本次只做低量、公開頁面的觀測，沒有登入、沒有繞過 `robots.txt`、沒有大量下載。
+
+### 測試對象與背景
+
+- 網站：RPG Maker Web Forums
+- 起始頁面：`https://forums.rpgmakerweb.com/threads/welcome-to-rpg-maker-guild.183984/`
+- 測試日期：2026-11-06
+- 性質：公開唯讀的 XenForo 論壇，頁面顯示 `data-logged-in="false"`。
+- 站方公告：2026-06-18 起唯讀，2026-12-11 永久關閉；官方 FAQ 明確表示不提供公開封存或備份，帳號、文章、附件、圖片與私訊都不會轉移，關站後刪除。
+- 站方規模（公告頁當下）：155,437 個主題、1,417,692 則訊息、211,478 位會員。
+- 官方 FAQ：`https://forums.rpgmakerweb.com/threads/rpg-maker-web-forum-closure-faq.183960/`
+
+### 測試方法
+
+1. 先讀取 `https://forums.rpgmakerweb.com/robots.txt`。
+2. 用 ForumKeep 預設的 `--robots respect` 建立封存，只嘗試 1 頁，並把請求間隔設為 10 秒。
+3. 以 HEAD 請求抽查頁面中的內嵌圖片與附件連結，確認是否需要登入或額外權限。
+4. 對照站方關站 FAQ，確認站方是否提供官方備份。
+
+```bash
+python -m forumkeep init \
+  --out rmw-check \
+  --url https://forums.rpgmakerweb.com/threads/welcome-to-rpg-maker-guild.183984/ \
+  --delay 10 \
+  --robots respect
+
+python -m forumkeep crawl \
+  --out rmw-check \
+  --max-pages 1 \
+  --delay 10 \
+  --robots respect -v
+```
+
+### 測試結果
+
+`robots.txt` 的主要內容：
+
+```text
+User-agent: *
+Disallow: /
+Crawl-delay: 10
+```
+
+ForumKeep 的實際輸出：
+
+```text
+blocked by robots: https://forums.rpgmakerweb.com/threads/welcome-to-rpg-maker-guild.183984/
+crawl 完成：0 頁、0 個新頁面、0 個錯誤、1 個被 robots 阻擋
+```
+
+附件抽查：
+
+| URL | 結果 |
+|-----|------|
+| `/data/attachments/347/347278-...jpg`（文章內嵌圖） | `200 image/jpeg` |
+| `/attachments/orionbymah1ro-png.368198/` | `403` |
+| `/attachments/sad-png.367901/` | `200 image/png` |
+
+### 結果解讀
+
+- **合規模式下無法全站備份**：`robots.txt` 對 `User-agent: *` 全面 `Disallow: /`，ForumKeep 預設會把起始頁標記為 blocked，不會抓取。這是工具預期的正確行為，不是程式錯誤。
+- **頁面公開，但下載不保證完整**：文章頁可讀，抽查的內嵌圖片可直接取得；但附件頁可能回 `403`，代表部分附件需要登入、權限或站方限制。因此不能宣稱「所有資源與下載都能備份」。
+- **全站規模很大**：15 萬主題、141 萬訊息，即使 robots 允許，也需要大量時間、頻寬與儲存空間；還可能包含第三方有著作權的素材，不能任意再散布。
+- **站方不提供官方備份**：FAQ 明確要求使用者自行保存想留下的內容；社群則有 RPG Refuge、RPG Maker Guild 等替代管道。
+
+### 這次運用得到的結論
+
+ForumKeep 適合「站方允許爬取、內容公開、需要離線保存」的論壇；這次對象剛好相反：**它是一個準備關站、已進入唯讀的論壇，且 `robots.txt` 全面禁止一般爬蟲**。因此本次沒有進行全站備份，也沒有使用 `--robots ignore` 強行繞過。
+
+若要在類似情境合規保存，建議：
+
+1. 先備份自己在登入狀態下可存取的個人文章與附件。
+2. 向站方（`support@rpgmakerweb.com`）詢問是否允許限速備份或提供資料匯出。
+3. 取得明確許可後，才由站方指定範圍與速率；仍應保留 `--delay 10` 之類的限速，不應繞過權限。
+4. 若只是要保存社群知識，優先使用官方公告的替代論壇與社群發起的保存計畫。
