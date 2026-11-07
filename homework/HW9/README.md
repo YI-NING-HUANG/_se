@@ -338,6 +338,17 @@ Wrangler 會印出一個 claim URL 與約 60 分鐘的認領期限。temporary �
 
 本次 HW9 的線上示範即是用這個方式建立。本次的 claim URL 會放在 `.claim-url.txt`（已列入 `.gitignore`），請在 60 分鐘內開啟並完成認領；逾期 temporary 帳號與資源會被刪除。
 
+### temporary 與「永久部署」的差別
+
+| 類型 | 期限 | 網址 | 資料 |
+|---|---|---|---|
+| temporary preview（目前示範） | 約 60 分鐘；未認領就刪除 | `*.workers.dev` | D1 一起刪除 |
+| 永久部署（自己的帳號） | 不會過期 | 同上或自訂網域 | D1 保留 |
+
+「永久部署」不是要租一台伺服器，也不是要讓自己的電腦一直開著；它只是把 Worker 程式與 D1 資料庫放進你的 Cloudflare 帳號，之後由 Cloudflare 持續執行。認領 temporary 帳號（claim）或用自己的帳號執行 `wrangler deploy` 都算永久部署。
+
+認領後，原本的 `https://hw9-dino-run.deciduous-device.workers.dev` 通常會保留，D1 分數也會保留；之後要更新程式再跑 `npm run deploy` 即可。
+
 ---
 
 ## 8. 單檔 HTML 分享版（GitHub Pages 可直接開）
