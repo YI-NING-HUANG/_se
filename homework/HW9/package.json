@@ -1,0 +1,22 @@
+{
+  "name": "hw9-dino-run",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "DINO RUN 搬上 Cloudflare Workers，使用 D1 建立全球排行榜",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "npm run db:migrate:local && wrangler dev --port 8787",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "db:create": "wrangler d1 create hw9-dino-run",
+    "deploy": "wrangler deploy",
+    "build:standalone": "node scripts/build-standalone.mjs",
+    "test": "bash test.sh"
+  },
+  "devDependencies": {
+    "wrangler": "^4.158.0"
+  }
+}

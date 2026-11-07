@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="DINO RUN">
+  <rect width="512" height="512" fill="#f7f7f2"/>
+  <rect x="10" y="10" width="492" height="492" fill="none" stroke="#2f3235" stroke-width="20"/>
+  <g fill="#2f3235" shape-rendering="crispEdges">
+    <rect x="96" y="240" width="96" height="48"/>
+    <rect x="72" y="272" width="72" height="32"/>
+    <rect x="160" y="224" width="192" height="112"/>
+    <rect x="304" y="160" width="80" height="96"/>
+    <rect x="320" y="112" width="128" height="96"/>
+    <rect x="416" y="160" width="64" height="48"/>
+    <rect x="352" y="288" width="80" height="24"/>
+    <rect x="416" y="312" width="24" height="32"/>
+    <rect x="192" y="336" width="48" height="80"/>
+    <rect x="176" y="400" width="96" height="32"/>
+    <rect x="288" y="336" width="48" height="64"/>
+    <rect x="272" y="384" width="80" height="32"/>
+    <rect x="80" y="432" width="352" height="16"/>
+  </g>
+  <rect x="432" y="128" width="24" height="24" fill="#f7f7f2"/>
+  <rect x="448" y="184" width="32" height="8" fill="#f7f7f2"/>
+</svg>

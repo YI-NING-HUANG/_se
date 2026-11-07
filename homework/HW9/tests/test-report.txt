@@ -1,0 +1,228 @@
+HW9 DINO RUN — Cloudflare Workers + D1 測試報告
+時間：2026-11-07T23:47:46+08:00
+Node：v24.21.0
+Wrangler：4.158.0
+
+===== JavaScript 語法檢查 =====
+PASS  JavaScript 語法檢查
+
+===== 套用 D1 migration（local） =====
+npm warn install-scripts .npmrc allow-scripts setting is being ignored because --allow-scripts was passed on the command line
+
+ ⛅️ wrangler 4.158.0
+────────────────────
+Resource location: local 
+
+Use --remote if you want to access the remote instance.
+
+✅ No migrations to apply!
+PASS  套用 D1 migration（local）
+
+===== 清空測試資料庫 =====
+npm warn install-scripts .npmrc allow-scripts setting is being ignored because --allow-scripts was passed on the command line
+
+ ⛅️ wrangler 4.158.0
+────────────────────
+Resource location: local 
+
+Use --remote if you want to access the remote instance.
+
+🌀 Executing on local database DB (ad3008da-89ee-4c2c-a159-36f6556d1f76) from .wrangler\state\v3\d1:
+🌀 To execute on your remote database, add a --remote flag to your wrangler command.
+🚣 1 command executed successfully.
+[
+  {
+    "results": [],
+    "success": true,
+    "meta": {
+      "duration": 0
+    }
+  }
+]
+PASS  清空測試資料庫
+
+===== Wrangler 打包驗證（dry-run） =====
+npm warn install-scripts .npmrc allow-scripts setting is being ignored because --allow-scripts was passed on the command line
+
+ ⛅️ wrangler 4.158.0
+────────────────────
+✨ Read 6 files from the assets directory C:\Users\EleenH_user\_se\homework\HW9\public
+Total Upload: 7.24 KiB / gzip: 2.49 KiB
+Your Worker has access to the following bindings:
+Binding                        Resource         
+env.DB (hw9-dino-run)          D1 Database      
+env.ASSETS                     Assets           
+
+--dry-run: exiting now.
+PASS  Wrangler 打包驗證（dry-run）
+
+===== 產生單檔 HTML（standalone） =====
+已產生 index.html（單檔版）
+排行榜 API：https://hw9-dino-run.deciduous-device.workers.dev
+PASS  產生單檔 HTML（standalone）
+
+===== 啟動 wrangler dev =====
+dev server 已啟動：http://127.0.0.1:8788
+
+===== 單元測試（validation） =====
+TAP version 13
+# Subtest: cleanName 接受正常名字並保留 Unicode
+ok 1 - cleanName 接受正常名字並保留 Unicode
+  ---
+  duration_ms: 2.2084
+  type: 'test'
+  ...
+# Subtest: cleanName 去除控制字元並合併空白
+ok 2 - cleanName 去除控制字元並合併空白
+  ---
+  duration_ms: 1.5901
+  type: 'test'
+  ...
+# Subtest: cleanName 以 Unicode code point 計算 16 字上限
+ok 3 - cleanName 以 Unicode code point 計算 16 字上限
+  ---
+  duration_ms: 0.4379
+  type: 'test'
+  ...
+# Subtest: cleanName 拒絕空字串、空白與非字串
+ok 4 - cleanName 拒絕空字串、空白與非字串
+  ---
+  duration_ms: 0.2395
+  type: 'test'
+  ...
+# Subtest: validScore 只接受 0 到 1000000 的整數
+ok 5 - validScore 只接受 0 到 1000000 的整數
+  ---
+  duration_ms: 0.24
+  type: 'test'
+  ...
+# Subtest: parseLimit 預設 10 並限制在 1 到 50
+ok 6 - parseLimit 預設 10 並限制在 1 到 50
+  ---
+  duration_ms: 0.2412
+  type: 'test'
+  ...
+# Subtest: parseLimit 拒絕非整數字串
+ok 7 - parseLimit 拒絕非整數字串
+  ---
+  duration_ms: 0.1576
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 134.8786
+PASS  單元測試（validation）
+
+===== API 系統測試（Cloudflare Workers + D1） =====
+TAP version 13
+# Subtest: GET /api/health 回報 Cloudflare Worker 與 D1
+ok 1 - GET /api/health 回報 Cloudflare Worker 與 D1
+  ---
+  duration_ms: 104.9492
+  type: 'test'
+  ...
+# Subtest: GET /api/scores 初始為空且 stats 歸零
+ok 2 - GET /api/scores 初始為空且 stats 歸零
+  ---
+  duration_ms: 45.1029
+  type: 'test'
+  ...
+# Subtest: API 回應使用 no-store 與 nosniff
+ok 3 - API 回應使用 no-store 與 nosniff
+  ---
+  duration_ms: 27.4681
+  type: 'test'
+  ...
+# Subtest: HEAD 請求不帶 body
+ok 4 - HEAD 請求不帶 body
+  ---
+  duration_ms: 45.9257
+  type: 'test'
+  ...
+# Subtest: 首頁與靜態資源由 Cloudflare Static Assets 提供
+ok 5 - 首頁與靜態資源由 Cloudflare Static Assets 提供
+  ---
+  duration_ms: 53.3278
+  type: 'test'
+  ...
+# Subtest: 未知 API 與未知頁面回傳 404
+ok 6 - 未知 API 與未知頁面回傳 404
+  ---
+  duration_ms: 33.9541
+  type: 'test'
+  ...
+# Subtest: OPTIONS preflight 允許跨網域的單檔前端
+ok 7 - OPTIONS preflight 允許跨網域的單檔前端
+  ---
+  duration_ms: 38.6049
+  type: 'test'
+  ...
+# Subtest: 不支援的 HTTP 方法回傳 405 與 Allow
+ok 8 - 不支援的 HTTP 方法回傳 405 與 Allow
+  ---
+  duration_ms: 59.0517
+  type: 'test'
+  ...
+# Subtest: POST 拒絕非法名字
+ok 9 - POST 拒絕非法名字
+  ---
+  duration_ms: 90.8522
+  type: 'test'
+  ...
+# Subtest: POST 拒絕非法分數
+ok 10 - POST 拒絕非法分數
+  ---
+  duration_ms: 104.1225
+  type: 'test'
+  ...
+# Subtest: POST 拒絕壞 JSON、非物件與過大內容
+ok 11 - POST 拒絕壞 JSON、非物件與過大內容
+  ---
+  duration_ms: 69.5506
+  type: 'test'
+  ...
+# Subtest: POST 寫入 D1 並回傳排名與紀錄
+ok 12 - POST 寫入 D1 並回傳排名與紀錄
+  ---
+  duration_ms: 43.8954
+  type: 'test'
+  ...
+# Subtest: 名字會清洗、同分依先後排名、高分排第一
+ok 13 - 名字會清洗、同分依先後排名、高分排第一
+  ---
+  duration_ms: 86.1577
+  type: 'test'
+  ...
+# Subtest: limit 參數會驗證、夾限並只回傳前 N 名
+ok 14 - limit 參數會驗證、夾限並只回傳前 N 名
+  ---
+  duration_ms: 76.2547
+  type: 'test'
+  ...
+# Subtest: GET /api/stats 與排行榜統計一致
+ok 15 - GET /api/stats 與排行榜統計一致
+  ---
+  duration_ms: 20.7614
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1071.2659
+PASS  API 系統測試（Cloudflare Workers + D1）
+
+===== 測試總結 =====
+測試案例：22（PASS=22 FAIL=0）
+測試步驟：PASS=7 FAIL=0
+ALL CHECKS PASSED

@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "hw9-dino-run",
+  "main": "src/index.js",
+  "compatibility_date": "2026-11-01",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "hw9-dino-run",
+      "database_id": "ad3008da-89ee-4c2c-a159-36f6556d1f76",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
