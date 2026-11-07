@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HW6 Docker 微服務展示</title>
+<style>
+body{font-family:system-ui,"Noto Sans TC",sans-serif;background:#0f172a;color:#e2e8f0;margin:0;padding:0}
+header{background:#1e293b;padding:20px;text-align:center;border-bottom:2px solid #38bdf8}
+h1{margin:0;color:#38bdf8}
+.sub{color:#94a3b8}
+main{max-width:1000px;margin:auto;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px}
+.card h3{margin:0 0 6px}
+.ok{color:#4ade80}.err{color:#f87171}
+pre{background:#020617;padding:10px;border-radius:8px;overflow:auto;max-height:220px;font-size:12px}
+button{background:#38bdf8;border:0;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold}
+input{padding:8px;border-radius:6px;border:1px solid #334155;width:70%}
+.arch{background:#1e293b;border:1px dashed #38bdf8;border-radius:10px;padding:12px;margin:16px 0;font-family:monospace;white-space:pre}
+a{color:#38bdf8}
+</style>
+</head>
+<body>
+<header>
+<h1>HW6 Docker 微服務系統</h1>
+<div class="sub">nginx reverse proxy :8080 → Node.js + Python + Rust + PostgreSQL</div>
+</header>
+<main>
+<div class="arch">Browser :8080
+   │
+ nginx (reverse proxy)
+ ┣━ / ─────────→ 前端靜態頁 (本頁)
+ ┣━ /api/* ───→ backend-node:3000 (主 API + Postgres)
+ ┣━ /python/* ─→ backend-python:5000 (Flask)
+ ┗━ /rust/* ───→ backend-rust:8000 (Axum)
+         ＋ PostgreSQL:5432 (services, notes)</div>
+
+<h2>服務狀態 (即時)</h2>
+<div class="grid" id="status"></div>
+<pre id="statusRaw">載入中...</pre>
+<button onclick="loadStatus()">重新整理狀態</button>
+
+<h2>PostgreSQL 留言板 (經 Node.js API)</h2>
+<input id="noteInput" placeholder="輸入留言...">
+<button onclick="addNote()">新增</button>
+<ul id="notes"></ul>
+
+<h2>Python 運算 (factorial + fibonacci)</h2>
+<input id="pyN" type="number" value="10" style="width:80px">
+<button onclick="pyCompute()">計算</button>
+<pre id="pyOut"></pre>
+
+<h2>Rust 高速 fib</h2>
+<input id="rustN" type="number" value="20" style="width:80px">
+<button onclick="rustFib()">計算</button>
+<pre id="rustOut"></pre>
+
+<h2>服務清單 (來自 DB)</h2>
+<pre id="svc"></pre>
+</main>
+<script>
+async function j(u, opt){ const r=await fetch(u,opt); return r.json(); }
+async function loadStatus(){
+  const box=document.getElementById('status'); box.innerHTML='';
+  const targets=[
+    ['nginx','/nginx-health',true],
+    ['node','/api/health',false],
+    ['python','/python/api/health',false],
+    ['rust','/rust/api/health',false],
+  ];
+  let agg={};
+  try{ agg=await j('/api/status'); }catch(e){ agg={error:String(e)}; }
+  document.getElementById('statusRaw').textContent=JSON.stringify(agg,null,2);
+  for(const [n,u,isText] of targets){
+    let cls='ok', txt='ok';
+    try{
+      if(isText){ const r=await fetch(u); txt=await r.text(); }
+      else{ const d=await j(u); txt=d.status||'ok'; }
+    }catch(e){ cls='err'; txt='error'; }
+    box.innerHTML+=`<div class="card"><h3>${n}</h3><div class="${cls}">${txt}</div><small>${u}</small></div>`;
+  }
+  try{
+    const svc=await j('/api/services');
+    document.getElementById('svc').textContent=JSON.stringify(svc,null,2);
+  }catch(e){}
+  loadNotes();
+}
+async function loadNotes(){
+  try{
+    const notes=await j('/api/notes');
+    document.getElementById('notes').innerHTML=notes.map(n=>`<li>#${n.id} ${n.content} <small>(${n.author})</small> <a href="#" onclick="delNote(${n.id});return false">刪</a></li>`).join('');
+  }catch(e){}
+}
+async function addNote(){
+  const v=document.getElementById('noteInput').value; if(!v) return;
+  await j('/api/notes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:v})});
+  document.getElementById('noteInput').value=''; loadNotes();
+}
+async function delNote(id){ await fetch('/api/notes/'+id,{method:'DELETE'}); loadNotes(); }
+async function pyCompute(){
+  const n=document.getElementById('pyN').value;
+  const d=await j('/python/api/compute',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({n:Number(n)})});
+  document.getElementById('pyOut').textContent=JSON.stringify(d,null,2);
+}
+async function rustFib(){
+  const n=document.getElementById('rustN').value;
+  const d=await j('/rust/api/fib?n='+n);
+  document.getElementById('rustOut').textContent=JSON.stringify(d,null,2);
+}
+loadStatus();
+</script>
+</body>
+</html>

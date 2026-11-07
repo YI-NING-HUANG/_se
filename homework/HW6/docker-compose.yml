@@ -1,0 +1,60 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: hw6-db
+    environment:
+      POSTGRES_DB: hw6db
+      POSTGRES_USER: hw6user
+      POSTGRES_PASSWORD: hw6pass
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hw6user -d hw6db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend-node:
+    build: ./backend-node
+    container_name: hw6-node
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: hw6user
+      DB_PASSWORD: hw6pass
+      DB_NAME: hw6db
+      PYTHON_URL: http://backend-python:5000
+      RUST_URL: http://backend-rust:8000
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "3000"
+
+  backend-python:
+    build: ./backend-python
+    container_name: hw6-python
+    expose:
+      - "5000"
+
+  backend-rust:
+    build: ./backend-rust
+    container_name: hw6-rust
+    expose:
+      - "8000"
+
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    container_name: hw6-nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend-node
+      - backend-python
+      - backend-rust
+
+volumes:
+  pgdata:
