@@ -3,8 +3,13 @@
 > 把 HW7 的離線小恐龍搬上 Cloudflare：前端由 Static Assets 託管，
 > 排行榜 API 跑在 Cloudflare Workers，分數存進 D1（SQLite）。
 >
-> 線上示範（Wrangler temporary preview 帳號）：
+> 線上示範（Wrangler temporary preview 帳號，約 60 分鐘後失效）：
 > <https://hw9-dino-run.deciduous-device.workers.dev>
+>
+> GitHub Pages 單檔版：
+> <https://yi-ning-huang.github.io/_se/homework/HW9/>
+>
+> 長期展示請照第 7 節部署到自己的 Cloudflare 帳號。
 >
 > 本機開發：`npm run dev` → <http://localhost:8787>
 
