@@ -7,3 +7,8 @@
 學校 | [金門大學資訊工程系](https://www.nqu.edu.tw/educsie/index.php)
 學生 | xxx
 學號 | xx
+
+## 作業
+
+依週次由小到大排序的作業索引：[homework/README.md](homework/README.md)
+
