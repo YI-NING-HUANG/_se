@@ -1,0 +1,104 @@
+cafeteria-sim tash.sh 測試
+日期: 2026-11-13T03:21:02Z
+專案: /c/Users/EleenH_user/_se/homework/HW10
+Python: /c/Users/EleenH_user/_se/homework/HW10/.venv/Scripts/python.exe
+
+=== [1] Python、依賴與編譯 ===
+Python 3.12.10
+PASS: Python 可執行
+simpy 4.1.2
+PASS: SimPy 可用
+cafeteria-sim 0.1.0
+PASS: 套件可匯入
+PASS: cafeteria_sim/tests/examples 編譯通過
+
+=== [2] 單元測試 ===
+test_compare_json (test_cli.CliTests.test_compare_json) ... ok
+test_invalid_configuration_returns_error (test_cli.CliTests.test_invalid_configuration_returns_error) ... ok
+test_optimize_json (test_cli.CliTests.test_optimize_json) ... ok
+test_run_json (test_cli.CliTests.test_run_json) ... ok
+test_defaults_are_valid (test_config.ConfigTests.test_defaults_are_valid) ... ok
+test_invalid_values_are_rejected (test_config.ConfigTests.test_invalid_values_are_rejected) ... ok
+test_none_pickup_is_valid (test_config.ConfigTests.test_none_pickup_is_valid) ... ok
+test_properties_convert_units (test_config.ConfigTests.test_properties_convert_units) ... ok
+test_deterministic_sampler (test_distributions.DistributionTests.test_deterministic_sampler) ... ok
+test_non_positive_mean_raises (test_distributions.DistributionTests.test_non_positive_mean_raises) ... ok
+test_samplers_are_positive_and_centered (test_distributions.DistributionTests.test_samplers_are_positive_and_centered) ... ok
+test_unknown_distribution_raises (test_distributions.DistributionTests.test_unknown_distribution_raises) ... ok
+test_interval_total_clips_to_window (test_metrics.MetricTests.test_interval_total_clips_to_window) ... ok
+test_max_overlap_clips_to_window (test_metrics.MetricTests.test_max_overlap_clips_to_window) ... ok
+test_max_overlap_handles_touching_intervals (test_metrics.MetricTests.test_max_overlap_handles_touching_intervals) ... ok
+test_percentile_rejects_invalid_p (test_metrics.MetricTests.test_percentile_rejects_invalid_p) ... ok
+test_percentile_uses_nearest_rank (test_metrics.MetricTests.test_percentile_uses_nearest_rank) ... ok
+test_wait_stats (test_metrics.MetricTests.test_wait_stats) ... ok
+test_finds_cheapest_feasible_plan (test_optimization.OptimizationTests.test_finds_cheapest_feasible_plan) ... ok
+test_invalid_limits_are_rejected (test_optimization.OptimizationTests.test_invalid_limits_are_rejected) ... ok
+test_missing_target_is_rejected (test_optimization.OptimizationTests.test_missing_target_is_rejected) ... ok
+test_p95_target_is_respected (test_optimization.OptimizationTests.test_p95_target_is_respected) ... ok
+test_per_window_pickup_is_priced_with_windows (test_optimization.OptimizationTests.test_per_window_pickup_is_priced_with_windows) ... ok
+test_returns_none_when_target_is_infeasible (test_optimization.OptimizationTests.test_returns_none_when_target_is_infeasible) ... ok
+test_aggregate_replications (test_simulation.SimulationTests.test_aggregate_replications) ... ok
+test_balking_when_queue_limit_is_zero (test_simulation.SimulationTests.test_balking_when_queue_limit_is_zero) ... ok
+test_compare_windows_uses_common_seeds (test_simulation.SimulationTests.test_compare_windows_uses_common_seeds) ... ok
+test_empty_aggregate_is_rejected (test_simulation.SimulationTests.test_empty_aggregate_is_rejected) ... ok
+test_invalid_replication_count_is_rejected (test_simulation.SimulationTests.test_invalid_replication_count_is_rejected) ... ok
+test_low_load_serves_everyone (test_simulation.SimulationTests.test_low_load_serves_everyone) ... ok
+test_more_windows_reduce_waiting (test_simulation.SimulationTests.test_more_windows_reduce_waiting) ... ok
+test_pickup_modes (test_simulation.SimulationTests.test_pickup_modes) ... ok
+test_reneging_when_patience_is_short (test_simulation.SimulationTests.test_reneging_when_patience_is_short) ... ok
+test_same_seed_is_reproducible (test_simulation.SimulationTests.test_same_seed_is_reproducible) ... ok
+test_warmup_customers_are_excluded_from_metrics (test_simulation.SimulationTests.test_warmup_customers_are_excluded_from_metrics) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 0.559s
+
+OK
+PASS: 單元測試全過（Ran 35 tests）
+
+=== [3] CLI 黑箱測試 ===
+PASS: python -m cafeteria_sim --help
+run: arrivals=134 served=134 mean_wait=14.7s p95=70.4s
+PASS: run --json（2 次模擬）
+compare: windows=[1, 2, 3] mean_waits=[260.9, 20.3, 15.6]
+PASS: compare --json（1,2,3 窗口）
+optimize: windows=1 pickup=0 cost=100/h mean_wait=8.8s
+PASS: optimize --json（最低成本配置）
+
+目標：平均總等候 <= 180 秒、P95 總等候 <= 450 秒
+模擬次數：每次配置 3 次，取顧客等候時間池化後計算
+
+最佳方案：點餐窗口 3 個、取餐檯 2 個，成本 650 元/小時
+  平均總等候 165.3 秒、P95 444.0 秒、完成率 100.0%
+
+可行候選方案（依成本排序）：
+ Win  Pickup     Cost/h    Mean(s)     P95(s)    Done%
+------------------------------------------------------
+   3      2        650      165.3      444.0   100.0%
+   4      2        800      109.6      351.4   100.0%
+   3      4        850      101.3      355.6   100.0%
+   4      3        900       58.3      232.6   100.0%
+   5      2        950       89.7      303.8   100.0%
+   4      4      1,000       40.9      180.2   100.0%
+   5      3      1,050       35.4      163.3   100.0%
+   6      2      1,100       62.6      246.1   100.0%
+
+完成：套件已可執行模擬、情境比較與人力最佳化。
+PASS: demo（情境比較 + 人力最佳化）
+
+=== [4] 建置、twine 檢查與 wheel 安裝 ===
+PASS: python -m build（wheel=1, sdist=1）
+Checking 
+C:/Users/EleenH_user/_se/homework/HW10/dist/cafeteria_sim-0.1.0-py3-none-any.wh
+l: PASSED
+Checking 
+C:/Users/EleenH_user/_se/homework/HW10/dist/cafeteria_sim-0.1.0.tar.gz: PASSED
+PASS: twine check
+PASS: wheel 匯入路徑正確
+wheel CLI: served=20
+PASS: wheel 安裝後 CLI 可執行
+
+----------------------------------------
+結果: PASS=14 FAIL=0
+ALL CHECKS PASSED
+測試報告: /c/Users/EleenH_user/_se/homework/HW10/tash.sh/test-report.txt
+建置產物: /c/Users/EleenH_user/_se/homework/HW10/dist
