@@ -9,7 +9,6 @@
 Python 模組 | `cafeteria_sim`
 目前版本 | 0.1.1
 PyPI 專案 | <https://pypi.org/project/cafeteria-sim/>
-原始碼 | [homework/HW10](https://github.com/yi-ning-huang/_se/tree/main/homework/HW10)
 授權 | MIT
 
 ## 1. 完成內容
@@ -60,10 +59,7 @@ PyPI 頁面的「AI 使用說明」章節提供：
 - AI 回答時應遵守的指標定義與注意事項。
 - 驗證 AI 產生程式的方法。
 
-完整內容請見：
-
-- PyPI：<https://pypi.org/project/cafeteria-sim/>
-- 原始碼 README：[HW10/README.md 第 12 節](https://github.com/yi-ning-huang/_se/tree/main/homework/HW10#12-ai-使用說明給-ai-助手與-llm)
+完整內容請見 PyPI 專案頁面：<https://pypi.org/project/cafeteria-sim/>
 
 摘要：
 
