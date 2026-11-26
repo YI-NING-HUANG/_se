@@ -13,15 +13,15 @@
 
 | 週次 | 作業 | 主題 | 快速跳轉 | 原始文件 |
 |---|---|---|---|---|
-| 1 | HW1 | mycurl：類 curl 的 CLI | [前往](#hw1) | [HW1/README.md](../HW1/README.md) |
-| 2 | HW2 | 校務系統 Web 應用（三個版本） | [前往](#hw2) | [HW2/README.md](../HW2/README.md) |
-| 3 | HW3 | ForumKeep 公開論壇離線保存 | [前往](#hw3) | [HW3/README.md](../HW3/README.md) |
-| 4 | HW4 | Git flow / GitHub flow 與 PR | [前往](#hw4) | [HW4/README.md](../HW4/README.md) |
+| 1 | HW1 | mycurl：類 curl 的 CLI | [前往](#hw1) | [HW01/README.md](../HW01/README.md) |
+| 2 | HW2 | 校務系統 Web 應用（三個版本） | [前往](#hw2) | [HW02/README.md](../HW02/README.md) |
+| 3 | HW3 | ForumKeep 公開論壇離線保存 | [前往](#hw3) | [HW03/README.md](../HW03/README.md) |
+| 4 | HW4 | Git flow / GitHub flow 與 PR | [前往](#hw4) | [HW04/README.md](../HW04/README.md) |
 | 5 | HW5 | 未提供（repo 中無此資料夾） | [前往](#hw5) | — |
-| 6 | HW6 | Docker Compose 微服務系統 | [前往](#hw6) | [HW6/README.md](../HW6/README.md) |
-| 7 | HW7 | DINO RUN 離線小恐龍 PWA | [前往](#hw7) | [HW7/README.md](../HW7/README.md) |
-| 8 | HW8 | xfrescue XenForo 論壇備份 | [前往](#hw8) | [HW8/README.md](../HW8/README.md) |
-| 9 | HW9 | DINO RUN on Cloudflare + D1 | [前往](#hw9) | [HW9/README.md](../HW9/README.md) |
+| 6 | HW6 | Docker Compose 微服務系統 | [前往](#hw6) | [HW06/README.md](../HW06/README.md) |
+| 7 | HW7 | DINO RUN 離線小恐龍 PWA | [前往](#hw7) | [HW07/README.md](../HW07/README.md) |
+| 8 | HW8 | xfrescue XenForo 論壇備份 | [前往](#hw8) | [HW08/README.md](../HW08/README.md) |
+| 9 | HW9 | DINO RUN on Cloudflare + D1 | [前往](#hw9) | [HW09/README.md](../HW09/README.md) |
 | 10 | HW10 | cafeteria-sim 排隊模擬套件 | [前往](#hw10) | [HW10/README.md](../HW10/README.md) |
 | 11 | HW11 | 作業總覽、PyPI 發佈與 AI 使用說明 | [前往](#hw11) | [本頁](README.md) |
 
@@ -37,9 +37,9 @@
 | 週次 | 1 |
 | 主題 | 用 Python 標準庫實作命令列 HTTP 客戶端 |
 | 技術 | Python 3.8+、`urllib`、`ssl`、`argparse`、unittest、Bash |
-| 進入點 | `homework/HW1/mycurl/mycurl.py`、`mycurl2.py` |
+| 進入點 | `homework/HW01/mycurl/mycurl.py`、`mycurl2.py` |
 | 測試 | `test.sh`：PASS=14 FAIL=0（含 13 個單元測試） |
-| 原始文件 | [HW1/README.md](../HW1/README.md) |
+| 原始文件 | [HW01/README.md](../HW01/README.md) |
 
 ### 專案簡介
 
@@ -69,33 +69,33 @@
 
 ```bash
 # 基本 GET
-python homework/HW1/mycurl/mycurl.py https://example.com
+python homework/HW01/mycurl/mycurl.py https://example.com
 
 # 加上標頭、顯示回應標頭、存檔
-python homework/HW1/mycurl/mycurl.py -H "X-Token: abc" -i -o out.json https://httpbin.org/get
+python homework/HW01/mycurl/mycurl.py -H "X-Token: abc" -i -o out.json https://httpbin.org/get
 
 # 顯示請求過程
-python homework/HW1/mycurl/mycurl.py -v https://httpbin.org/get
+python homework/HW01/mycurl/mycurl.py -v https://httpbin.org/get
 ```
 
 `mycurl2` 額外提供：
 
 ```bash
 # 把回應包裝成 HTML 報告
-python homework/HW1/mycurl/mycurl2.py -i https://example.com --html-out report.html
+python homework/HW01/mycurl/mycurl2.py -i https://example.com --html-out report.html
 
 # 啟動本機網頁操作介面（只聽 127.0.0.1）
-python homework/HW1/mycurl/mycurl2.py --serve 8080
+python homework/HW01/mycurl/mycurl2.py --serve 8080
 # 開 http://127.0.0.1:8080/
 
 # 產生專案介紹頁
-python homework/HW1/mycurl/mycurl2.py --demo-out index.html
+python homework/HW01/mycurl/mycurl2.py --demo-out index.html
 ```
 
 ### 專案結構
 
 ```text
-homework/HW1/mycurl/
+homework/HW01/mycurl/
   mycurl.py        # 主程式（約 309 行，核心）
   mycurl2.py       # 超集：import mycurl + --html-out/--serve/--demo-out
   index.html       # 介紹頁
@@ -110,7 +110,7 @@ homework/HW1/mycurl/
 ### 測試與成果
 
 ```bash
-bash homework/HW1/mycurl/test.sh 2>&1 | tee homework/HW1/mycurl/test-report.txt
+bash homework/HW01/mycurl/test.sh 2>&1 | tee homework/HW01/mycurl/test-report.txt
 ```
 
 最新結果：**PASS=14 FAIL=0，ALL CHECKS PASSED**，包含基本指令、13 個單元測試、
@@ -123,7 +123,7 @@ bash homework/HW1/mycurl/test.sh 2>&1 | tee homework/HW1/mycurl/test-report.txt
 - `-v` 全走 stderr，不污染 pipe 或存檔內容。
 - body 以 bytes 寫入 stdout，圖片與二進位內容不會損壞。
 
-[回目錄](#toc) ｜ [完整內容](../HW1/README.md) ｜ [線上展示](https://yi-ning-huang.github.io/_se/homework/HW1/mycurl/)
+[回目錄](#toc) ｜ [完整內容](../HW01/README.md) ｜ [線上展示](https://yi-ning-huang.github.io/_se/homework/HW01/mycurl/)
 
 ---
 
@@ -135,9 +135,9 @@ bash homework/HW1/mycurl/test.sh 2>&1 | tee homework/HW1/mycurl/test-report.txt
 | 週次 | 2 |
 | 主題 | 類似金門大學校務系統的選課 Web 應用 |
 | 技術 | Python 標準庫、`sqlite3`、HTML/CSS/JS、Bash |
-| 進入點 | `homework/HW2/app1/app.py`、`app2/`、`app3/` |
+| 進入點 | `homework/HW02/app1/app.py`、`app2/`、`app3/` |
 | 測試 | 三個版本皆 PASS=13 FAIL=0 |
-| 原始文件 | [HW2/README.md](../HW2/README.md) |
+| 原始文件 | [HW02/README.md](../HW02/README.md) |
 
 ### 專案簡介
 
@@ -162,18 +162,18 @@ bash homework/HW1/mycurl/test.sh 2>&1 | tee homework/HW1/mycurl/test-report.txt
 在 repo 根目錄執行（以 v1.0 為例）：
 
 ```bash
-python homework/HW2/app1/app.py --initdb
-python homework/HW2/app1/app.py --serve 8080
+python homework/HW02/app1/app.py --initdb
+python homework/HW02/app1/app.py --serve 8080
 # 開 http://127.0.0.1:8080/
 # 帳號 s001、密碼 1234
 ```
 
-免跑 server 也能看：雙擊 `homework/HW2/app1/index.html`。
+免跑 server 也能看：雙擊 `homework/HW02/app1/index.html`。
 
 一次跑完三個版本的回歸測試：
 
 ```bash
-bash homework/HW2/test/test-all.sh
+bash homework/HW02/test/test-all.sh
 ```
 
 ### 版本門檻
@@ -185,7 +185,7 @@ bash homework/HW2/test/test-all.sh
 ### 專案結構
 
 ```text
-homework/HW2/
+homework/HW02/
   app1/       # v1.0 選課核心
   app2/       # v1.1 成績與 GPA
   app3/       # v1.2 老師登分與管理員開課
@@ -203,7 +203,7 @@ homework/HW2/
 - 以教學與展示為目的，沒有正式的身分驗證、密碼雜湊或權限控管。
 - 資料庫為本機 SQLite 檔案，不適合直接當成正式校務系統部署。
 
-[回目錄](#toc) ｜ [完整內容](../HW2/README.md) ｜ [線上展示](https://yi-ning-huang.github.io/_se/homework/HW2/docs/)
+[回目錄](#toc) ｜ [完整內容](../HW02/README.md) ｜ [線上展示](https://yi-ning-huang.github.io/_se/homework/HW02/docs/)
 
 ---
 
@@ -217,7 +217,7 @@ homework/HW2/
 | 技術 | Python 3.11+ 標準庫、SQLite、BFS 爬蟲、HTML/CSS 解析、靜態網站生成 |
 | 進入點 | `python -m forumkeep`（在 HW3 資料夾執行） |
 | 測試 | 36 個 unittest；端到端 `test.sh`：PASS=10 FAIL=0 |
-| 原始文件 | [HW3/README.md](../HW3/README.md) |
+| 原始文件 | [HW03/README.md](../HW03/README.md) |
 
 ### 專案簡介
 
@@ -244,7 +244,7 @@ ForumKeep 會沿著站內連結抓取公開頁面，收集文章中的圖片、�
 
 ### 快速開始
 
-在 `homework/HW3` 資料夾執行：
+在 `homework/HW03` 資料夾執行：
 
 ```bash
 # 1. 建立封存並記錄起始網址
@@ -313,7 +313,7 @@ archive/
 
 ### 測試與成果
 
-在 `homework/HW3` 執行：
+在 `homework/HW03` 執行：
 
 ```bash
 bash test.sh
@@ -345,7 +345,7 @@ HW3 曾對 RPG Maker Web 論壇做低量觀測。該站 `robots.txt` 對一般�
 - 預設只抓與種子同主機的素材；跨網域 CDN 需明確設定。
 - 不是 WARC 工具；原始 HTML 與素材分開保存，離線網站是另外產生的。
 
-[回目錄](#toc) ｜ [完整內容](../HW3/README.md)
+[回目錄](#toc) ｜ [完整內容](../HW03/README.md)
 
 ---
 
@@ -358,7 +358,7 @@ HW3 曾對 RPG Maker Web 論壇做低量觀測。該站 `robots.txt` 對一般�
 | 主題 | Forking Workflow、功能分支、merge 與 Pull Request |
 | 技術 | Git、GitHub、Markdown |
 | 成果 | 已建立 PR #1，完整記錄 branch、merge、reflog 與 PR 流程 |
-| 原始文件 | [HW4/README.md](../HW4/README.md) |
+| 原始文件 | [HW04/README.md](../HW04/README.md) |
 
 ### 專案簡介
 
@@ -416,7 +416,7 @@ git push origin main
 - 此作業沒有程式碼，重點在流程紀錄與指令可重現性。
 - 參考資料包含 Git 官方文件、GitHub Docs 與阮一峰的 Git 工作流程文章。
 
-[回目錄](#toc) ｜ [完整內容](../HW4/README.md)
+[回目錄](#toc) ｜ [完整內容](../HW04/README.md)
 
 ---
 
@@ -438,9 +438,9 @@ repo 中沒有 `HW5` 資料夾，因此本總覽不列 HW5 章節。
 | 週次 | 6 |
 | 主題 | nginx + Node.js + Python + Rust + PostgreSQL 的微服務系統 |
 | 技術 | Docker、Docker Compose、nginx、Node.js、Flask、Rust Axum、PostgreSQL 16 |
-| 進入點 | `homework/HW6/docker-compose.yml` |
+| 進入點 | `homework/HW06/docker-compose.yml` |
 | 成果 | 5 個服務啟動，API 與資料庫 CRUD 實測通過 |
-| 原始文件 | [HW6/README.md](../HW6/README.md) |
+| 原始文件 | [HW06/README.md](../HW06/README.md) |
 
 ### 專案簡介
 
@@ -487,7 +487,7 @@ repo 中沒有 `HW5` 資料夾，因此本總覽不列 HW5 章節。
 
 ### 快速開始
 
-在 `homework/HW6` 資料夾執行：
+在 `homework/HW06` 資料夾執行：
 
 ```bash
 docker compose up -d --build
@@ -526,7 +526,7 @@ docker compose down -v   # 連同 pgdata 資料卷一起刪除
 ### 專案結構
 
 ```text
-HW6/
+HW06/
 ├── docker-compose.yml          # 5 個服務的編排定義
 ├── .dockerignore
 ├── db/init.sql                 # services、notes 兩張表 + 種子資料
@@ -561,7 +561,7 @@ Notes CRUD、Python factorial/fibonacci、Rust fib 與 nginx health 都已用 cu
 - 若 `8080` 被占用，可修改 compose 的埠映射，例如 `"8090:80"`。
 - 此為教學與展示用系統，沒有正式的使用者認證與 TLS 設定。
 
-[回目錄](#toc) ｜ [完整內容](../HW6/README.md)
+[回目錄](#toc) ｜ [完整內容](../HW06/README.md)
 
 ---
 
@@ -573,9 +573,9 @@ Notes CRUD、Python factorial/fibonacci、Rust fib 與 nginx health 都已用 cu
 | 週次 | 7 |
 | 主題 | Canvas 無限跑酷遊戲 + SQLite 排行榜 + PWA 離線遊玩 |
 | 技術 | HTML/CSS/JavaScript、Canvas、Service Worker、Python 標準庫、SQLite、Playwright |
-| 進入點 | `homework/HW7/app.py` |
+| 進入點 | `homework/HW07/app.py` |
 | 測試 | 18 單元 + 19 系統 + 6 E2E = 43 passed |
-| 原始文件 | [HW7/README.md](../HW7/README.md) |
+| 原始文件 | [HW07/README.md](../HW07/README.md) |
 
 ### 專案簡介
 
@@ -600,7 +600,7 @@ Service Worker + PWA manifest 讓遊戲第一次載入後可離線遊玩。
 
 ### 快速開始
 
-在 `homework/HW7` 資料夾執行：
+在 `homework/HW07` 資料夾執行：
 
 ```bash
 python app.py
@@ -646,7 +646,7 @@ curl -X POST http://127.0.0.1:8787/api/scores \
 ### 專案結構
 
 ```text
-HW7/
+HW07/
 ├─ app.py                  # Python 標準庫 HTTP server + SQLite + API
 ├─ test.sh                 # 一鍵測試（單元 + 系統 + E2E + JS 語法）
 ├─ data/scores.db          # 執行後自動產生（不進版控）
@@ -667,7 +667,7 @@ HW7/
 
 ### 測試與成果
 
-在 `homework/HW7` 執行：
+在 `homework/HW07` 執行：
 
 ```bash
 bash test.sh
@@ -691,7 +691,7 @@ E2E 使用 `.tmp/e2e.db`，不影響正式資料。
 - 音效受瀏覽器自動播放政策限制，需要先有使用者互動才會發聲。
 - E2E 目前只使用系統 Chrome，尚未涵蓋 Firefox、Safari 或跨作業系統矩陣。
 
-[回目錄](#toc) ｜ [完整內容](../HW7/README.md)
+[回目錄](#toc) ｜ [完整內容](../HW07/README.md)
 
 ---
 
@@ -705,7 +705,7 @@ E2E 使用 `.tmp/e2e.db`，不影響正式資料。
 | 技術 | Python 3.11+ 標準庫、SQLite、HTML 解析、Docker |
 | 進入點 | `python -m xfrescue`（在 HW8 資料夾執行） |
 | 測試 | 27 個 unittest，全部使用本機 mock server |
-| 原始文件 | [HW8/README.md](../HW8/README.md) |
+| 原始文件 | [HW08/README.md](../HW08/README.md) |
 
 ### 專案簡介
 
@@ -736,7 +736,7 @@ E2E 使用 `.tmp/e2e.db`，不影響正式資料。
 
 ### 快速開始
 
-在 `homework/HW8` 資料夾執行：
+在 `homework/HW08` 資料夾執行：
 
 ```bash
 python -m xfrescue --out archive init
@@ -808,7 +808,7 @@ xfrescue/
 
 ### 測試與成果
 
-在 `homework/HW8` 執行：
+在 `homework/HW08` 執行：
 
 ```bash
 python -m unittest discover -s tests -v
@@ -844,7 +844,7 @@ python -m xfrescue --out archive verify --fix
 - 需要登入才看得到的附件不會被下載；這是刻意設計。
 - 全站 crawl 規模很大，建議先從 `--preset plugins` 或單一 forum 開始。
 
-[回目錄](#toc) ｜ [完整內容](../HW8/README.md)
+[回目錄](#toc) ｜ [完整內容](../HW08/README.md)
 
 ---
 
@@ -856,9 +856,9 @@ python -m xfrescue --out archive verify --fix
 | 週次 | 9 |
 | 主題 | 把 HW7 的小恐龍搬到 Cloudflare，排行榜上雲 |
 | 技術 | Cloudflare Workers、Static Assets、D1、Wrangler、JavaScript |
-| 進入點 | `homework/HW9/`（`npm run dev`） |
+| 進入點 | `homework/HW09/`（`npm run dev`） |
 | 測試 | 22 個測試（7 unit + 15 API/整合），PASS=22 FAIL=0 |
-| 原始文件 | [HW9/README.md](../HW9/README.md) |
+| 原始文件 | [HW09/README.md](../HW09/README.md) |
 
 ### 專案簡介
 
@@ -909,7 +909,7 @@ HW9 延續 HW7 的 DINO RUN，把「Python `ThreadingHTTPServer` + 本機 SQLite
 
 ### 本機開發
 
-在 `homework/HW9` 資料夾執行：
+在 `homework/HW09` 資料夾執行：
 
 ```bash
 npm install
@@ -954,7 +954,7 @@ curl https://你的-worker.workers.dev/api/scores
 npm run build:standalone
 ```
 
-產生 `HW9/index.html`（約 44 KB），內含遊戲 HTML、CSS、JavaScript、data URI 圖示，
+產生 `HW09/index.html`（約 44 KB），內含遊戲 HTML、CSS、JavaScript、data URI 圖示，
 並連回同一個 Cloudflare Worker + D1。可放到 GitHub Pages 或任何靜態空間。
 
 ### API 規格
@@ -973,7 +973,7 @@ npm run build:standalone
 ### 專案結構
 
 ```text
-HW9/
+HW09/
 ├── index.html                    # 單檔分享版（由 build:standalone 產生）
 ├── package.json
 ├── wrangler.jsonc                # Worker、Static Assets、D1 綁定
@@ -995,7 +995,7 @@ HW9/
 
 ### 測試與成果
 
-在 `homework/HW9` 執行：
+在 `homework/HW09` 執行：
 
 ```bash
 bash test.sh
@@ -1035,7 +1035,7 @@ ALL CHECKS PASSED
 - 離線時沒有全球排行榜，只保留本機最高分（刻意設計）。
 - 尚未把 Playwright E2E 指向 Cloudflare 版本。
 
-[回目錄](#toc) ｜ [完整內容](../HW9/README.md) ｜ [GitHub Pages 單檔版](https://yi-ning-huang.github.io/_se/homework/HW9/)
+[回目錄](#toc) ｜ [完整內容](../HW09/README.md) ｜ [GitHub Pages 單檔版](https://yi-ning-huang.github.io/_se/homework/HW09/)
 
 ---
 
@@ -1326,14 +1326,14 @@ python -m cafeteria_sim run --json --seed 42
 
 | 作業 | 原始文件 | 展示／套件 |
 |---|---|---|
-| HW1 | [HW1/README.md](../HW1/README.md) | [mycurl 線上展示](https://yi-ning-huang.github.io/_se/homework/HW1/mycurl/) |
-| HW2 | [HW2/README.md](../HW2/README.md) | [校務系統展示](https://yi-ning-huang.github.io/_se/homework/HW2/docs/) |
-| HW3 | [HW3/README.md](../HW3/README.md) | 本機 `archive/site/index.html` |
-| HW4 | [HW4/README.md](../HW4/README.md) | [PR #1](https://github.com/YI-NING-HUANG/se_example/pull/1) |
-| HW6 | [HW6/README.md](../HW6/README.md) | 本機 <http://localhost:8080/> |
-| HW7 | [HW7/README.md](../HW7/README.md) | 本機 <http://127.0.0.1:8787/> |
-| HW8 | [HW8/README.md](../HW8/README.md) | 本機 `archive/site/index.html` |
-| HW9 | [HW9/README.md](../HW9/README.md) | [GitHub Pages 單檔版](https://yi-ning-huang.github.io/_se/homework/HW9/) |
+| HW1 | [HW01/README.md](../HW01/README.md) | [mycurl 線上展示](https://yi-ning-huang.github.io/_se/homework/HW01/mycurl/) |
+| HW2 | [HW02/README.md](../HW02/README.md) | [校務系統展示](https://yi-ning-huang.github.io/_se/homework/HW02/docs/) |
+| HW3 | [HW03/README.md](../HW03/README.md) | 本機 `archive/site/index.html` |
+| HW4 | [HW04/README.md](../HW04/README.md) | [PR #1](https://github.com/YI-NING-HUANG/se_example/pull/1) |
+| HW6 | [HW06/README.md](../HW06/README.md) | 本機 <http://localhost:8080/> |
+| HW7 | [HW07/README.md](../HW07/README.md) | 本機 <http://127.0.0.1:8787/> |
+| HW8 | [HW08/README.md](../HW08/README.md) | 本機 `archive/site/index.html` |
+| HW9 | [HW09/README.md](../HW09/README.md) | [GitHub Pages 單檔版](https://yi-ning-huang.github.io/_se/homework/HW09/) |
 | HW10 | [HW10/README.md](../HW10/README.md) | [PyPI](https://pypi.org/project/cafeteria-sim/) |
 | HW11 | [本頁](README.md) | — |
 
